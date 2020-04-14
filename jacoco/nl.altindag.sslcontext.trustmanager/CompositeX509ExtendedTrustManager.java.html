@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompositeX509ExtendedTrustManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SSLContext Kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.sslcontext.trustmanager</a> &gt; <span class="el_source">CompositeX509ExtendedTrustManager.java</span></div><h1>CompositeX509ExtendedTrustManager.java</h1><pre class="source lang-java linenums">package nl.altindag.sslcontext.trustmanager;
+
+import nl.altindag.sslcontext.util.TrustManagerUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.net.Socket;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+
+/**
+ * {@link CompositeX509ExtendedTrustManager} is a wrapper for a collection of TrustManagers.
+ * It has the ability to validate a certificate chain against multiple TrustManagers.
+ * If any one of the composed managers trusts a certificate chain, then it is trusted by the composite manager.
+ * The TrustManager can be build from one or more of any combination provided within the {@link Builder CompositeX509ExtendedTrustManager.Builder}.
+ * &lt;br&gt;&lt;br&gt;
+ * This includes:
+ * &lt;pre&gt;
+ *     - Any amount of custom TrustManagers
+ *     - Any amount of custom TrustStores
+ * &lt;/pre&gt;
+ *
+ * @see &lt;a href=&quot;http://stackoverflow.com/questions/1793979/registering-multiple-keystores-in-jvm&quot;&gt;
+ *     http://stackoverflow.com/questions/1793979/registering-multiple-keystores-in-jvm
+ *     &lt;/a&gt;
+ * @see &lt;a href=&quot;http://codyaray.com/2013/04/java-ssl-with-multiple-keystores&quot;&gt;
+ *     http://codyaray.com/2013/04/java-ssl-with-multiple-keystores
+ *     &lt;/a&gt;
+ */
+public final class CompositeX509ExtendedTrustManager extends X509ExtendedTrustManager {
+
+<span class="fc" id="L42">    private static final Logger LOGGER = LoggerFactory.getLogger(CompositeX509ExtendedTrustManager.class);</span>
+    private static final String CERTIFICATE_EXCEPTION_MESSAGE = &quot;None of the TrustManagers trust this certificate chain&quot;;
+    private static final String CLIENT_CERTIFICATE_LOG_MESSAGE = &quot;Received the following client certificate: [{}]&quot;;
+    private static final String SERVER_CERTIFICATE_LOG_MESSAGE = &quot;Received the following server certificate: [{}]&quot;;
+
+    private final List&lt;? extends X509TrustManager&gt; trustManagers;
+    private X509Certificate[] acceptedIssuers;
+
+<span class="fc" id="L50">    public CompositeX509ExtendedTrustManager(List&lt;? extends X509TrustManager&gt; trustManagers) {</span>
+<span class="fc" id="L51">        this.trustManagers = Collections.unmodifiableList(trustManagers);</span>
+<span class="fc" id="L52">    }</span>
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L57">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, chain[0].getSubjectDN());</span>
+        }
+
+<span class="fc" id="L60">        List&lt;CertificateException&gt; certificateExceptions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        for (X509TrustManager trustManager : trustManagers) {</span>
+            try {
+<span class="fc" id="L63">                trustManager.checkClientTrusted(chain, authType);</span>
+<span class="fc" id="L64">                return;</span>
+<span class="fc" id="L65">            } catch (CertificateException e) {</span>
+<span class="fc" id="L66">                certificateExceptions.add(e);</span>
+            }
+<span class="fc" id="L68">        }</span>
+
+<span class="fc" id="L70">        CertificateException certificateException = new CertificateException(CERTIFICATE_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L71">        certificateExceptions.forEach(certificateException::addSuppressed);</span>
+
+<span class="fc" id="L73">        throw certificateException;</span>
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L79">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, chain[0].getSubjectDN());</span>
+        }
+
+<span class="fc" id="L82">        List&lt;CertificateException&gt; certificateExceptions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        for (X509TrustManager trustManager : trustManagers) {</span>
+            try {
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">                if (trustManager instanceof X509ExtendedTrustManager) {</span>
+<span class="fc" id="L86">                    ((X509ExtendedTrustManager) trustManager).checkClientTrusted(chain, authType, socket);</span>
+<span class="fc" id="L87">                    return;</span>
+                } else {
+<span class="nc" id="L89">                    trustManager.checkClientTrusted(chain, authType);</span>
+<span class="nc" id="L90">                    return;</span>
+                }
+<span class="fc" id="L92">            } catch (CertificateException e) {</span>
+<span class="fc" id="L93">                certificateExceptions.add(e);</span>
+            }
+<span class="fc" id="L95">        }</span>
+
+<span class="fc" id="L97">        CertificateException certificateException = new CertificateException(CERTIFICATE_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L98">        certificateExceptions.forEach(certificateException::addSuppressed);</span>
+
+<span class="fc" id="L100">        throw certificateException;</span>
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine sslEngine) throws CertificateException {
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L106">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, chain[0].getSubjectDN());</span>
+        }
+
+<span class="fc" id="L109">        List&lt;CertificateException&gt; certificateExceptions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">        for (X509TrustManager trustManager : trustManagers) {</span>
+            try {
+<span class="pc bpc" id="L112" title="1 of 2 branches missed.">                if (trustManager instanceof X509ExtendedTrustManager) {</span>
+<span class="fc" id="L113">                    ((X509ExtendedTrustManager) trustManager).checkClientTrusted(chain, authType, sslEngine);</span>
+<span class="fc" id="L114">                    return;</span>
+                } else {
+<span class="nc" id="L116">                    trustManager.checkClientTrusted(chain, authType);</span>
+<span class="nc" id="L117">                    return;</span>
+                }
+<span class="fc" id="L119">            } catch (CertificateException e) {</span>
+<span class="fc" id="L120">                certificateExceptions.add(e);</span>
+            }
+<span class="fc" id="L122">        }</span>
+
+<span class="fc" id="L124">        CertificateException certificateException = new CertificateException(CERTIFICATE_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L125">        certificateExceptions.forEach(certificateException::addSuppressed);</span>
+
+<span class="fc" id="L127">        throw certificateException;</span>
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L133">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, chain[0].getSubjectDN());</span>
+        }
+
+<span class="fc" id="L136">        List&lt;CertificateException&gt; certificateExceptions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">        for (X509TrustManager trustManager : trustManagers) {</span>
+            try {
+<span class="fc" id="L139">                trustManager.checkServerTrusted(chain, authType);</span>
+<span class="fc" id="L140">                return;</span>
+<span class="fc" id="L141">            } catch (CertificateException e) {</span>
+<span class="fc" id="L142">                certificateExceptions.add(e);</span>
+            }
+<span class="fc" id="L144">        }</span>
+
+<span class="fc" id="L146">        CertificateException certificateException = new CertificateException(CERTIFICATE_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L147">        certificateExceptions.forEach(certificateException::addSuppressed);</span>
+
+<span class="fc" id="L149">        throw certificateException;</span>
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L155">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, chain[0].getSubjectDN());</span>
+        }
+
+<span class="fc" id="L158">        List&lt;CertificateException&gt; certificateExceptions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        for (X509TrustManager trustManager : trustManagers) {</span>
+            try {
+<span class="pc bpc" id="L161" title="1 of 2 branches missed.">                if (trustManager instanceof X509ExtendedTrustManager) {</span>
+<span class="fc" id="L162">                    ((X509ExtendedTrustManager) trustManager).checkServerTrusted(chain, authType, socket);</span>
+<span class="fc" id="L163">                    return;</span>
+                } else {
+<span class="nc" id="L165">                    trustManager.checkServerTrusted(chain, authType);</span>
+<span class="nc" id="L166">                    return;</span>
+                }
+<span class="fc" id="L168">            } catch (CertificateException e) {</span>
+<span class="fc" id="L169">                certificateExceptions.add(e);</span>
+            }
+<span class="fc" id="L171">        }</span>
+
+<span class="fc" id="L173">        CertificateException certificateException = new CertificateException(CERTIFICATE_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L174">        certificateExceptions.forEach(certificateException::addSuppressed);</span>
+
+<span class="fc" id="L176">        throw certificateException;</span>
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine sslEngine) throws CertificateException {
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L182">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, chain[0].getSubjectDN());</span>
+        }
+
+<span class="fc" id="L185">        List&lt;CertificateException&gt; certificateExceptions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        for (X509TrustManager trustManager : trustManagers) {</span>
+            try {
+<span class="pc bpc" id="L188" title="1 of 2 branches missed.">                if (trustManager instanceof X509ExtendedTrustManager) {</span>
+<span class="fc" id="L189">                    ((X509ExtendedTrustManager) trustManager).checkServerTrusted(chain, authType, sslEngine);</span>
+<span class="fc" id="L190">                    return;</span>
+                } else {
+<span class="nc" id="L192">                    trustManager.checkServerTrusted(chain, authType);</span>
+<span class="nc" id="L193">                    return;</span>
+                }
+<span class="fc" id="L195">            } catch (CertificateException e) {</span>
+<span class="fc" id="L196">                certificateExceptions.add(e);</span>
+            }
+<span class="fc" id="L198">        }</span>
+
+<span class="fc" id="L200">        CertificateException certificateException = new CertificateException(CERTIFICATE_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L201">        certificateExceptions.forEach(certificateException::addSuppressed);</span>
+
+<span class="fc" id="L203">        throw certificateException;</span>
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (isNull(acceptedIssuers)) {</span>
+<span class="fc" id="L209">            acceptedIssuers = trustManagers.stream()</span>
+<span class="fc" id="L210">                    .map(X509TrustManager::getAcceptedIssuers)</span>
+<span class="fc" id="L211">                    .flatMap(Arrays::stream)</span>
+<span class="fc" id="L212">                    .distinct()</span>
+<span class="fc" id="L213">                    .toArray(X509Certificate[]::new);</span>
+        }
+<span class="fc" id="L215">        return acceptedIssuers;</span>
+    }
+
+    public int size() {
+<span class="fc" id="L219">        return trustManagers.size();</span>
+    }
+
+    public static Builder builder() {
+<span class="fc" id="L223">        return new Builder();</span>
+    }
+
+<span class="fc" id="L226">    public static final class Builder {</span>
+
+<span class="fc" id="L228">        private final List&lt;X509TrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
+
+        public &lt;T extends X509TrustManager&gt; Builder withTrustManagers(T... trustManagers) {
+<span class="fc" id="L231">            return withTrustManagers(Arrays.asList(trustManagers));</span>
+        }
+
+        public Builder withTrustManagers(List&lt;? extends X509TrustManager&gt; trustManagers) {
+<span class="fc" id="L235">            this.trustManagers.addAll(trustManagers);</span>
+<span class="fc" id="L236">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; Builder withTrustStores(T... trustStores) {
+<span class="fc" id="L240">            return withTrustStores(Arrays.asList(trustStores));</span>
+        }
+
+        public Builder withTrustStores(List&lt;? extends KeyStore&gt; trustStores) {
+<span class="fc bfc" id="L244" title="All 2 branches covered.">            for (KeyStore trustStore : trustStores) {</span>
+<span class="fc" id="L245">                this.trustManagers.add(TrustManagerUtils.createTrustManager(trustStore));</span>
+<span class="fc" id="L246">            }</span>
+<span class="fc" id="L247">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; Builder withTrustStore(T trustStore) {
+<span class="fc" id="L251">            this.trustManagers.add(TrustManagerUtils.createTrustManager(trustStore));</span>
+<span class="fc" id="L252">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; Builder withTrustStore(T trustStore, String trustManagerAlgorithm) {
+<span class="fc" id="L256">            this.trustManagers.add(TrustManagerUtils.createTrustManager(trustStore, trustManagerAlgorithm));</span>
+<span class="fc" id="L257">            return this;</span>
+        }
+
+        public CompositeX509ExtendedTrustManager build() {
+<span class="fc" id="L261">            return new CompositeX509ExtendedTrustManager(trustManagers);</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

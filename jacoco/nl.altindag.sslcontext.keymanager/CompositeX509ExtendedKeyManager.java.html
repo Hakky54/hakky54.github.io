@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompositeX509ExtendedKeyManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SSLContext Kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.sslcontext.keymanager</a> &gt; <span class="el_source">CompositeX509ExtendedKeyManager.java</span></div><h1>CompositeX509ExtendedKeyManager.java</h1><pre class="source lang-java linenums">package nl.altindag.sslcontext.keymanager;
+
+import nl.altindag.sslcontext.model.KeyStoreHolder;
+import nl.altindag.sslcontext.util.KeyManagerUtils;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509KeyManager;
+import java.net.Socket;
+import java.security.KeyStore;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Represents an ordered list of {@link X509ExtendedKeyManager} with most-preferred managers first.
+ *
+ * This is necessary because of the fine-print on {@link SSLContext#init}:
+ * Only the first instance of a particular key and/or key manager implementation type in the
+ * array is used. (For example, only the first javax.net.ssl.X509KeyManager in the array will be used.)
+ * The KeyManager can be build from one or more of any combination provided within the {@link Builder CompositeX509ExtendedKeyManager.Builder}.
+ * &lt;br&gt;&lt;br&gt;
+ * This includes:
+ * &lt;pre&gt;
+ *     - Any amount of custom KeyManagers
+ *     - Any amount of custom Identities
+ * &lt;/pre&gt;
+ *
+ * @see &lt;a href=&quot;http://stackoverflow.com/questions/1793979/registering-multiple-keystores-in-jvm&quot;&gt;
+ *     http://stackoverflow.com/questions/1793979/registering-multiple-keystores-in-jvm
+ *     &lt;/a&gt;
+ * @see &lt;a href=&quot;http://codyaray.com/2013/04/java-ssl-with-multiple-keystores&quot;&gt;
+ *     http://codyaray.com/2013/04/java-ssl-with-multiple-keystores
+ *     &lt;/a&gt;
+ */
+public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManager {
+
+    private final List&lt;? extends X509KeyManager&gt; keyManagers;
+
+    /**
+     * Creates a new {@link CompositeX509ExtendedKeyManager}.
+     *
+     * @param keyManagers the {@link X509ExtendedKeyManager}, ordered with the most-preferred managers first.
+     */
+<span class="fc" id="L50">    public CompositeX509ExtendedKeyManager(List&lt;? extends X509KeyManager&gt; keyManagers) {</span>
+<span class="fc" id="L51">        this.keyManagers = Collections.unmodifiableList(keyManagers);</span>
+<span class="fc" id="L52">    }</span>
+
+    /**
+     * Chooses the first non-null client alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L61">            String alias = keyManager.chooseClientAlias(keyType, issuers, socket);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L63">                return alias;</span>
+            }
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">        return null;</span>
+    }
+
+    /**
+     * Chooses the first non-null client alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseEngineClientAlias(String[] keyTypes, Principal[] issuers, SSLEngine sslEngine) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">            if (keyManager instanceof X509ExtendedKeyManager) {</span>
+<span class="fc" id="L77">                String alias = ((X509ExtendedKeyManager) keyManager).chooseEngineClientAlias(keyTypes, issuers, sslEngine);</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">                if (alias != null) {</span>
+<span class="fc" id="L79">                    return alias;</span>
+                }
+            }
+<span class="fc" id="L82">        }</span>
+<span class="fc" id="L83">        return null;</span>
+    }
+
+    /**
+     * Chooses the first non-null server alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L93">            String alias = keyManager.chooseServerAlias(keyType, issuers, socket);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L95">                return alias;</span>
+            }
+<span class="fc" id="L97">        }</span>
+<span class="fc" id="L98">        return null;</span>
+    }
+
+    /**
+     * Chooses the first non-null server alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine sslEngine) {
+<span class="fc bfc" id="L107" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="pc bpc" id="L108" title="1 of 2 branches missed.">            if (keyManager instanceof X509ExtendedKeyManager) {</span>
+<span class="fc" id="L109">                String alias = ((X509ExtendedKeyManager) keyManager).chooseEngineServerAlias(keyType, issuers, sslEngine);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">                if (alias != null) {</span>
+<span class="fc" id="L111">                    return alias;</span>
+                }
+            }
+<span class="fc" id="L114">        }</span>
+<span class="fc" id="L115">        return null;</span>
+    }
+
+    /**
+     * Returns the first non-null private key associated with the
+     * given alias, or {@code null} if the alias can't be found.
+     */
+    @Override
+    public PrivateKey getPrivateKey(String alias) {
+<span class="fc bfc" id="L124" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L125">            PrivateKey privateKey = keyManager.getPrivateKey(alias);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            if (privateKey != null) {</span>
+<span class="fc" id="L127">                return privateKey;</span>
+            }
+<span class="fc" id="L129">        }</span>
+<span class="fc" id="L130">        return null;</span>
+    }
+
+    /**
+     * Returns the first non-null certificate chain associated with the
+     * given alias, or {@code null} if the alias can't be found.
+     */
+    @Override
+    public X509Certificate[] getCertificateChain(String alias) {
+<span class="fc bfc" id="L139" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L140">            X509Certificate[] chain = keyManager.getCertificateChain(alias);</span>
+<span class="pc bpc" id="L141" title="1 of 4 branches missed.">            if (chain != null &amp;&amp; chain.length &gt; 0) {</span>
+<span class="fc" id="L142">                return chain;</span>
+            }
+<span class="fc" id="L144">        }</span>
+<span class="fc" id="L145">        return null;</span>
+    }
+
+    /**
+     * Get all matching aliases for authenticating the client side of a
+     * secure socket, or {@code null} if there are no matches.
+     */
+    @Override
+    public String[] getClientAliases(String keyType, Principal[] issuers) {
+<span class="fc" id="L154">        List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L156">            aliases.addAll(Arrays.asList(keyManager.getClientAliases(keyType, issuers)));</span>
+<span class="fc" id="L157">        }</span>
+<span class="fc" id="L158">        return emptyToNull(aliases.toArray(new String[]{}));</span>
+    }
+
+    /**
+     * Get all matching aliases for authenticating the server side of a
+     * secure socket, or {@code null} if there are no matches.
+     */
+    @Override
+    public String[] getServerAliases(String keyType, Principal[] issuers) {
+<span class="fc" id="L167">        List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L169">            aliases.addAll(Arrays.asList(keyManager.getServerAliases(keyType, issuers)));</span>
+<span class="fc" id="L170">        }</span>
+<span class="fc" id="L171">        return emptyToNull(aliases.toArray(new String[]{}));</span>
+    }
+
+    public int size() {
+<span class="fc" id="L175">        return keyManagers.size();</span>
+    }
+
+    private &lt;T&gt; T[] emptyToNull(T[] arr) {
+<span class="pc bpc" id="L179" title="1 of 2 branches missed.">        return (arr.length == 0) ? null : arr;</span>
+    }
+
+    public static Builder builder() {
+<span class="fc" id="L183">        return new Builder();</span>
+    }
+
+<span class="fc" id="L186">    public static final class Builder {</span>
+
+<span class="fc" id="L188">        private final List&lt;X509KeyManager&gt; keyManagers = new ArrayList&lt;&gt;();</span>
+
+        public &lt;T extends X509KeyManager&gt; Builder withKeyManagers(T... keyManagers) {
+<span class="fc" id="L191">            return withKeyManagers(Arrays.asList(keyManagers));</span>
+        }
+
+        public Builder withKeyManagers(List&lt;? extends X509KeyManager&gt; keyManagers) {
+<span class="fc" id="L195">            this.keyManagers.addAll(keyManagers);</span>
+<span class="fc" id="L196">            return this;</span>
+        }
+
+        public &lt;T extends KeyStoreHolder&gt; Builder withIdentities(T... identities) {
+<span class="fc" id="L200">            return withIdentities(Arrays.asList(identities));</span>
+        }
+
+        public Builder withIdentities(List&lt;? extends KeyStoreHolder&gt; identities) {
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            for (KeyStoreHolder identity : identities) {</span>
+<span class="fc" id="L205">                this.keyManagers.add(KeyManagerUtils.createKeyManager(identity.getKeyStore(), identity.getKeyStorePassword()));</span>
+<span class="fc" id="L206">            }</span>
+<span class="fc" id="L207">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; Builder withIdentity(T identity, char[] identityPassword, String keyManagerAlgorithm) {
+<span class="fc" id="L211">            this.keyManagers.add(KeyManagerUtils.createKeyManager(identity, identityPassword, keyManagerAlgorithm));</span>
+<span class="fc" id="L212">            return this;</span>
+        }
+
+        public CompositeX509ExtendedKeyManager build() {
+<span class="fc" id="L216">            return new CompositeX509ExtendedKeyManager(keyManagers);</span>
+        }
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
