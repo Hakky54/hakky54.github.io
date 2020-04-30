@@ -25,8 +25,8 @@
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLPeerUnverifiedException;
 <a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLSession;
 <a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.SSLSessionContext;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.X509KeyManager;
-<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.X509TrustManager;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.X509ExtendedKeyManager;
+<a class="jxr_linenumber" name="L21" href="#L21">21</a>  <strong class="jxr_keyword">import</strong> javax.net.ssl.X509ExtendedTrustManager;
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <strong class="jxr_keyword">import</strong> javax.security.auth.x500.X500Principal;
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
 <a class="jxr_linenumber" name="L24" href="#L24">24</a>  <strong class="jxr_keyword">import</strong> java.io.InputStream;
@@ -130,7 +130,7 @@
 <a class="jxr_linenumber" name="L122" href="#L122">122</a>     @Test
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> buildSSLFactoryWithTrustMaterialFromTrustManager() <strong class="jxr_keyword">throws</strong> CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
 <a class="jxr_linenumber" name="L124" href="#L124">124</a>         KeyStore trustStore = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + TRUSTSTORE_FILE_NAME, TRUSTSTORE_PASSWORD);
-<a class="jxr_linenumber" name="L125" href="#L125">125</a>         X509TrustManager trustManager = TrustManagerUtils.createTrustManager(trustStore);
+<a class="jxr_linenumber" name="L125" href="#L125">125</a>         X509ExtendedTrustManager trustManager = TrustManagerUtils.createTrustManager(trustStore);
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> 
 <a class="jxr_linenumber" name="L127" href="#L127">127</a>         SSLFactory sslFactory = SSLFactory.builder()
 <a class="jxr_linenumber" name="L128" href="#L128">128</a>                 .withTrustManager(trustManager)
@@ -228,7 +228,7 @@
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>     @Test
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> buildSSLFactoryWithIdentityMaterialAndTrustMaterialFromIdentityManagerAndTrustStore() <strong class="jxr_keyword">throws</strong> Exception {
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L223" href="#L223">223</a>         X509KeyManager identityManager = KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L223" href="#L223">223</a>         X509ExtendedKeyManager identityManager = KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD);
 <a class="jxr_linenumber" name="L224" href="#L224">224</a> 
 <a class="jxr_linenumber" name="L225" href="#L225">225</a>         SSLFactory sslFactory = SSLFactory.builder()
 <a class="jxr_linenumber" name="L226" href="#L226">226</a>                 .withKeyManager(identityManager)
