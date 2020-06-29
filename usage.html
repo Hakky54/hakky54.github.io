@@ -78,7 +78,7 @@
 
 <div class="source">
 <div class="source"><pre class="prettyprint">SSLFactory.builder()
-          .withTrustStoreMaterial(trustStore, trustStorePassword)
+          .withTrustMaterial(trustStore, trustStorePassword)
           .build();
 </pre></div></div>
 
@@ -94,7 +94,7 @@
 
 <div class="source">
 <div class="source"><pre class="prettyprint">SSLFactory.builder()
-          .withTrustStoreMaterial(trustStore, trustStorePassword)
+          .withTrustMaterial(trustStore, trustStorePassword)
           .withHostnameVerifier(hostnameVerifier)
           .withSecureRandom(secureRandom)
           .withProtocol(&quot;TLSv1.2&quot;)
@@ -106,7 +106,7 @@
 <div class="source">
 <div class="source"><pre class="prettyprint">SSLFactory.builder()
           .withIdentityMaterial(identity, identityPassword)
-          .withTrustStoreMaterial(trustStore, trustStorePassword)
+          .withTrustMaterial(trustStore, trustStorePassword)
           .withHostnameVerifier(hostnameVerifier)
           .withProtocol(&quot;TLSv1.2&quot;)
           .build();
@@ -119,10 +119,10 @@
           .withIdentityMaterial(identityA, identityPasswordA)
           .withIdentityMaterial(identityB, identityPasswordB)
           .withIdentityMaterial(identityC, identityPasswordC)
-          .withTrustStoreMaterial(trustStoreA, trustStorePasswordA)
-          .withTrustStoreMaterial(trustStoreB, trustStorePasswordB)
-          .withTrustStoreMaterial(trustStoreC, trustStorePasswordC)
-          .withTrustStoreMaterial(trustStoreD, trustStorePasswordD)
+          .withTrustMaterial(trustStoreA, trustStorePasswordA)
+          .withTrustMaterial(trustStoreB, trustStorePasswordB)
+          .withTrustMaterial(trustStoreC, trustStorePasswordC)
+          .withTrustMaterial(trustStoreD, trustStorePasswordD)
           .withProtocol(&quot;TLSv1.2&quot;)
           .build();
 </pre></div></div>
@@ -135,7 +135,7 @@ X509ExtendedTrustManager trustManager = ...
 
 SSLFactory.builder()
           .withIdentityMaterial(keyManager)
-          .withTrustStoreMaterial(trustManager)
+          .withTrustMaterial(trustManager)
           .build();
 </pre></div></div>
 </section><section>
