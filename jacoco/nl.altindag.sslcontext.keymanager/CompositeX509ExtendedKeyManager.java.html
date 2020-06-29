@@ -197,7 +197,7 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
 
         public Builder withIdentities(List&lt;? extends KeyStoreHolder&gt; identities) {
 <span class="fc bfc" id="L199" title="All 2 branches covered.">            for (KeyStoreHolder identity : identities) {</span>
-<span class="fc" id="L200">                this.keyManagers.add(KeyManagerUtils.createKeyManager(identity.getKeyStore(), identity.getKeyStorePassword()));</span>
+<span class="fc" id="L200">                this.keyManagers.add(KeyManagerUtils.createKeyManager(identity.getKeyStore(), identity.getKeyPassword()));</span>
 <span class="fc" id="L201">            }</span>
 <span class="fc" id="L202">            return this;</span>
         }

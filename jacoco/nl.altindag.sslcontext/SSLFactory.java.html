@@ -19,6 +19,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509ExtendedKeyManager;
 import javax.net.ssl.X509ExtendedTrustManager;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
@@ -34,12 +35,11 @@ import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.ArrayUtils.isEmpty;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class SSLFactory {
 
-<span class="fc" id="L42">    private static final Logger LOGGER = LoggerFactory.getLogger(SSLFactory.class);</span>
+<span class="fc" id="L41">    private static final Logger LOGGER = LoggerFactory.getLogger(SSLFactory.class);</span>
+<span class="fc" id="L42">    private static final char[] EMPTY_PASSWORD = {};</span>
 
     private final String protocol;
     private final SecureRandom secureRandom;
@@ -52,6 +52,7 @@ public final class SSLFactory {
 <span class="fc" id="L52">    private final List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
     private final boolean includeDefaultJdkTrustStore;
     private final boolean trustingAllCertificatesWithoutValidationEnabled;
+    private final boolean passwordCachingEnabled;
 
     private SSLContext sslContext;
     private CompositeX509ExtendedTrustManager trustManager;
@@ -66,96 +67,116 @@ public final class SSLFactory {
                        List&lt;KeyStoreHolder&gt; trustStores,
                        List&lt;X509ExtendedTrustManager&gt; trustManagers,
                        boolean includeDefaultJdkTrustStore,
-<span class="fc" id="L69">                       boolean trustingAllCertificatesWithoutValidationEnabled) {</span>
+                       boolean trustingAllCertificatesWithoutValidationEnabled,
+<span class="fc" id="L71">                       boolean passwordCachingEnabled) {</span>
 
-<span class="fc" id="L71">        this.protocol = protocol;</span>
-<span class="fc" id="L72">        this.secureRandom = secureRandom;</span>
-<span class="fc" id="L73">        this.hostnameVerifier = hostnameVerifier;</span>
-<span class="fc" id="L74">        this.identities.addAll(identities);</span>
-<span class="fc" id="L75">        this.identityManagers.addAll(identityManagers);</span>
-<span class="fc" id="L76">        this.trustStores.addAll(trustStores);</span>
-<span class="fc" id="L77">        this.trustManagers.addAll(trustManagers);</span>
-<span class="fc" id="L78">        this.includeDefaultJdkTrustStore = includeDefaultJdkTrustStore;</span>
-<span class="fc" id="L79">        this.trustingAllCertificatesWithoutValidationEnabled = trustingAllCertificatesWithoutValidationEnabled;</span>
-<span class="fc" id="L80">    }</span>
+<span class="fc" id="L73">        this.protocol = protocol;</span>
+<span class="fc" id="L74">        this.secureRandom = secureRandom;</span>
+<span class="fc" id="L75">        this.hostnameVerifier = hostnameVerifier;</span>
+<span class="fc" id="L76">        this.identities.addAll(identities);</span>
+<span class="fc" id="L77">        this.identityManagers.addAll(identityManagers);</span>
+<span class="fc" id="L78">        this.trustStores.addAll(trustStores);</span>
+<span class="fc" id="L79">        this.trustManagers.addAll(trustManagers);</span>
+<span class="fc" id="L80">        this.includeDefaultJdkTrustStore = includeDefaultJdkTrustStore;</span>
+<span class="fc" id="L81">        this.trustingAllCertificatesWithoutValidationEnabled = trustingAllCertificatesWithoutValidationEnabled;</span>
+<span class="fc" id="L82">        this.passwordCachingEnabled = passwordCachingEnabled;</span>
+<span class="fc" id="L83">    }</span>
 
     private void createSSLContextWithTrustMaterial() {
-<span class="fc" id="L83">        createSSLContext(null, createTrustManagers());</span>
-<span class="fc" id="L84">    }</span>
+<span class="fc" id="L86">        createSSLContext(null, createTrustManagers());</span>
+<span class="fc" id="L87">    }</span>
 
     private void createSSLContextWithKeyMaterialAndTrustMaterial() {
-<span class="fc" id="L87">        createSSLContext(createKeyManager(), createTrustManagers());</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L90">        createSSLContext(createKeyManager(), createTrustManagers());</span>
+<span class="fc" id="L91">    }</span>
 
     private void createSSLContext(KeyManager[] keyManagers, TrustManager[] trustManagers)  {
         try {
-<span class="fc" id="L92">            sslContext = SSLContext.getInstance(protocol);</span>
-<span class="fc" id="L93">            sslContext.init(keyManagers, trustManagers, secureRandom);</span>
-<span class="fc" id="L94">        } catch (NoSuchAlgorithmException | KeyManagementException e) {</span>
-<span class="fc" id="L95">            throw new GenericSSLContextException(e);</span>
-<span class="fc" id="L96">        }</span>
-<span class="fc" id="L97">    }</span>
+<span class="fc" id="L95">            sslContext = SSLContext.getInstance(protocol);</span>
+<span class="fc" id="L96">            sslContext.init(keyManagers, trustManagers, secureRandom);</span>
+<span class="fc" id="L97">        } catch (NoSuchAlgorithmException | KeyManagementException e) {</span>
+<span class="fc" id="L98">            throw new GenericSSLContextException(e);</span>
+<span class="fc" id="L99">        }</span>
+<span class="fc" id="L100">    }</span>
 
     private KeyManager[] createKeyManager() {
-<span class="fc" id="L100">        keyManager = CompositeX509ExtendedKeyManager.builder()</span>
-<span class="fc" id="L101">                .withKeyManagers(identityManagers)</span>
-<span class="fc" id="L102">                .withIdentities(identities)</span>
-<span class="fc" id="L103">                .build();</span>
+<span class="fc" id="L103">        keyManager = CompositeX509ExtendedKeyManager.builder()</span>
+<span class="fc" id="L104">                .withKeyManagers(identityManagers)</span>
+<span class="fc" id="L105">                .withIdentities(identities)</span>
+<span class="fc" id="L106">                .build();</span>
 
-<span class="fc" id="L105">        return new X509ExtendedKeyManager[] {keyManager};</span>
+<span class="fc bfc" id="L108" title="All 4 branches covered.">        if (!passwordCachingEnabled &amp;&amp; !identities.isEmpty()) {</span>
+<span class="fc" id="L109">            List&lt;KeyStoreHolder&gt; sanitizedIdentities = sanitizeKeyStores(identities);</span>
+<span class="fc" id="L110">            identities.clear();</span>
+<span class="fc" id="L111">            identities.addAll(sanitizedIdentities);</span>
+        }
+
+<span class="fc" id="L114">        return new X509ExtendedKeyManager[] {keyManager};</span>
     }
 
     private TrustManager[] createTrustManagers() {
-<span class="fc" id="L109">        CompositeX509ExtendedTrustManager.Builder trustManagerBuilder = CompositeX509ExtendedTrustManager.builder()</span>
-<span class="fc" id="L110">                .withTrustManagers(trustManagers)</span>
-<span class="fc" id="L111">                .withTrustStores(trustStores.stream()</span>
-<span class="fc" id="L112">                        .map(KeyStoreHolder::getKeyStore)</span>
-<span class="fc" id="L113">                        .collect(toList())</span>
+<span class="fc" id="L118">        CompositeX509ExtendedTrustManager.Builder trustManagerBuilder = CompositeX509ExtendedTrustManager.builder()</span>
+<span class="fc" id="L119">                .withTrustManagers(trustManagers)</span>
+<span class="fc" id="L120">                .withTrustStores(trustStores.stream()</span>
+<span class="fc" id="L121">                        .map(KeyStoreHolder::getKeyStore)</span>
+<span class="fc" id="L122">                        .collect(toList())</span>
                 );
 
-<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (trustingAllCertificatesWithoutValidationEnabled) {</span>
-<span class="fc" id="L117">            LOGGER.warn(&quot;UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation. Please don't use this configuration at production.&quot;);</span>
-<span class="fc" id="L118">            trustManagerBuilder.withTrustManagers(UnsafeX509ExtendedTrustManager.INSTANCE);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">        if (trustingAllCertificatesWithoutValidationEnabled) {</span>
+<span class="fc" id="L126">            LOGGER.warn(&quot;UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation. Please don't use this configuration at production.&quot;);</span>
+<span class="fc" id="L127">            trustManagerBuilder.withTrustManagers(UnsafeX509ExtendedTrustManager.INSTANCE);</span>
         }
 
-<span class="fc bfc" id="L121" title="All 2 branches covered.">        if (includeDefaultJdkTrustStore) {</span>
-<span class="fc" id="L122">            trustManagerBuilder.withTrustManagers(TrustManagerUtils.createTrustManagerWithJdkTrustedCertificates());</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (includeDefaultJdkTrustStore) {</span>
+<span class="fc" id="L131">            trustManagerBuilder.withTrustManagers(TrustManagerUtils.createTrustManagerWithJdkTrustedCertificates());</span>
         }
 
-<span class="fc" id="L125">        trustManager = trustManagerBuilder.build();</span>
-<span class="fc" id="L126">        return new TrustManager[] {trustManager};</span>
+<span class="fc" id="L134">        trustManager = trustManagerBuilder.build();</span>
+
+<span class="fc bfc" id="L136" title="All 4 branches covered.">        if (!passwordCachingEnabled &amp;&amp; !trustStores.isEmpty()) {</span>
+<span class="fc" id="L137">            List&lt;KeyStoreHolder&gt; sanitizedTrustStores = sanitizeKeyStores(trustStores);</span>
+<span class="fc" id="L138">            trustStores.clear();</span>
+<span class="fc" id="L139">            trustStores.addAll(sanitizedTrustStores);</span>
+        }
+<span class="fc" id="L141">        return new TrustManager[] {trustManager};</span>
+    }
+
+    private List&lt;KeyStoreHolder&gt; sanitizeKeyStores(List&lt;KeyStoreHolder&gt; keyStores) {
+<span class="fc" id="L145">        return keyStores.stream()</span>
+<span class="fc" id="L146">                .map(keyStoreHolder -&gt; new KeyStoreHolder(keyStoreHolder.getKeyStore(), EMPTY_PASSWORD, EMPTY_PASSWORD))</span>
+<span class="fc" id="L147">                .collect(toList());</span>
     }
 
     public List&lt;KeyStoreHolder&gt; getIdentities() {
-<span class="fc" id="L130">        return Collections.unmodifiableList(identities);</span>
+<span class="fc" id="L151">        return Collections.unmodifiableList(identities);</span>
     }
 
     public List&lt;KeyStoreHolder&gt; getTrustStores() {
-<span class="fc" id="L134">        return Collections.unmodifiableList(trustStores);</span>
+<span class="fc" id="L155">        return Collections.unmodifiableList(trustStores);</span>
     }
 
     public SSLContext getSslContext() {
-<span class="fc" id="L138">        return sslContext;</span>
+<span class="fc" id="L159">        return sslContext;</span>
     }
 
     public Optional&lt;X509ExtendedKeyManager&gt; getKeyManager() {
-<span class="fc" id="L142">        return Optional.ofNullable(keyManager);</span>
+<span class="fc" id="L163">        return Optional.ofNullable(keyManager);</span>
     }
 
     public X509ExtendedTrustManager getTrustManager() {
-<span class="fc" id="L146">        return trustManager;</span>
+<span class="fc" id="L167">        return trustManager;</span>
     }
 
     public X509Certificate[] getTrustedCertificates() {
-<span class="fc" id="L150">        return trustManager.getAcceptedIssuers();</span>
+<span class="fc" id="L171">        return trustManager.getAcceptedIssuers();</span>
     }
 
     public HostnameVerifier getHostnameVerifier() {
-<span class="fc" id="L154">        return hostnameVerifier;</span>
+<span class="fc" id="L175">        return hostnameVerifier;</span>
     }
 
     public static Builder builder() {
-<span class="fc" id="L158">        return new Builder();</span>
+<span class="fc" id="L179">        return new Builder();</span>
     }
 
     public static class Builder {
@@ -171,164 +192,190 @@ public final class SSLFactory {
         public static final String IDENTITY_AND_TRUST_MATERIAL_VALIDATION_EXCEPTION_MESSAGE = &quot;Could not create instance of SSLFactory because Identity &quot; +
                 &quot;and Trust material are not present. Please provide at least a Trust material.&quot;;
 
-<span class="fc" id="L174">        private String protocol = &quot;TLSv1.2&quot;;</span>
-<span class="fc" id="L175">        private SecureRandom secureRandom = new SecureRandom();</span>
-<span class="fc" id="L176">        private HostnameVerifier hostnameVerifier = (host, sslSession) -&gt; host.equalsIgnoreCase(sslSession.getPeerHost());</span>
+<span class="fc" id="L195">        private String protocol = &quot;TLSv1.2&quot;;</span>
+<span class="fc" id="L196">        private SecureRandom secureRandom = new SecureRandom();</span>
+<span class="fc" id="L197">        private HostnameVerifier hostnameVerifier = (host, sslSession) -&gt; host.equalsIgnoreCase(sslSession.getPeerHost());</span>
 
-<span class="fc" id="L178">        private final List&lt;KeyStoreHolder&gt; identities = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L179">        private final List&lt;KeyStoreHolder&gt; trustStores = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L180">        private final List&lt;X509ExtendedKeyManager&gt; identityManagers = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L181">        private final List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L199">        private final List&lt;KeyStoreHolder&gt; identities = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L200">        private final List&lt;KeyStoreHolder&gt; trustStores = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L201">        private final List&lt;X509ExtendedKeyManager&gt; identityManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L202">        private final List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
 
-<span class="fc" id="L183">        private boolean includeDefaultJdkTrustStore = false;</span>
-<span class="fc" id="L184">        private boolean trustingAllCertificatesWithoutValidationEnabled = false;</span>
+<span class="fc" id="L204">        private boolean includeDefaultJdkTrustStore = false;</span>
+<span class="fc" id="L205">        private boolean trustingAllCertificatesWithoutValidationEnabled = false;</span>
+<span class="fc" id="L206">        private boolean passwordCachingEnabled = false;</span>
 
-<span class="fc" id="L186">        private Builder() {}</span>
+<span class="fc" id="L208">        private Builder() {}</span>
 
-        public Builder withDefaultJdkTrustStore() {
-<span class="fc" id="L189">            this.includeDefaultJdkTrustStore = true;</span>
-<span class="fc" id="L190">            return this;</span>
+        public Builder withDefaultTrustMaterial() {
+<span class="fc" id="L211">            this.includeDefaultJdkTrustStore = true;</span>
+<span class="fc" id="L212">            return this;</span>
         }
 
-        public Builder withTrustManager(X509ExtendedTrustManager trustManager) {
-<span class="fc" id="L194">            trustManagers.add(trustManager);</span>
-<span class="fc" id="L195">            return this;</span>
+        public Builder withTrustMaterial(X509ExtendedTrustManager trustManager) {
+<span class="fc" id="L216">            trustManagers.add(trustManager);</span>
+<span class="fc" id="L217">            return this;</span>
         }
 
-        public Builder withTrustStore(String trustStorePath, char[] trustStorePassword) {
-<span class="fc" id="L199">            return withTrustStore(trustStorePath, trustStorePassword, KeyStore.getDefaultType());</span>
+        public Builder withTrustMaterial(String trustStorePath, char[] trustStorePassword) {
+<span class="fc" id="L221">            return withTrustMaterial(trustStorePath, trustStorePassword, KeyStore.getDefaultType());</span>
         }
 
-        public Builder withTrustStore(String trustStorePath, char[] trustStorePassword, String trustStoreType) {
-<span class="fc bfc" id="L203" title="All 4 branches covered.">            if (isBlank(trustStorePath) || isEmpty(trustStorePassword)) {</span>
-<span class="fc" id="L204">                throw new GenericKeyStoreException(TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
+        public Builder withTrustMaterial(String trustStorePath, char[] trustStorePassword, String trustStoreType) {
+<span class="fc bfc" id="L225" title="All 4 branches covered.">            if (isBlank(trustStorePath) || isEmpty(trustStorePassword)) {</span>
+<span class="fc" id="L226">                throw new GenericKeyStoreException(TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
             }
 
             try {
-<span class="fc" id="L208">                KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);</span>
-<span class="fc" id="L209">                KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
-<span class="fc" id="L210">                trustStores.add(trustStoreHolder);</span>
-<span class="fc" id="L211">            } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {</span>
-<span class="fc" id="L212">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
-<span class="fc" id="L213">            }</span>
+<span class="fc" id="L230">                KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);</span>
+<span class="fc" id="L231">                KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L232">                trustStores.add(trustStoreHolder);</span>
+<span class="fc" id="L233">            } catch (IOException | KeyStoreException | NoSuchAlgorithmException | CertificateException e) {</span>
+<span class="fc" id="L234">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
+<span class="fc" id="L235">            }</span>
 
-<span class="fc" id="L215">            return this;</span>
+<span class="fc" id="L237">            return this;</span>
         }
 
-        public Builder withTrustStore(Path trustStorePath, char[] trustStorePassword) {
-<span class="fc" id="L219">            return withTrustStore(trustStorePath, trustStorePassword, KeyStore.getDefaultType());</span>
+        public Builder withTrustMaterial(Path trustStorePath, char[] trustStorePassword) {
+<span class="fc" id="L241">            return withTrustMaterial(trustStorePath, trustStorePassword, KeyStore.getDefaultType());</span>
         }
 
-        public Builder withTrustStore(Path trustStorePath, char[] trustStorePassword, String trustStoreType) {
-<span class="fc bfc" id="L223" title="All 6 branches covered.">            if (isNull(trustStorePath) || isEmpty(trustStorePassword) || isBlank(trustStoreType)) {</span>
-<span class="fc" id="L224">                throw new GenericKeyStoreException(TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
+        public Builder withTrustMaterial(Path trustStorePath, char[] trustStorePassword, String trustStoreType) {
+<span class="fc bfc" id="L245" title="All 6 branches covered.">            if (isNull(trustStorePath) || isEmpty(trustStorePassword) || isBlank(trustStoreType)) {</span>
+<span class="fc" id="L246">                throw new GenericKeyStoreException(TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
             }
 
             try {
-<span class="fc" id="L228">                KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);</span>
-<span class="fc" id="L229">                KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
-<span class="fc" id="L230">                trustStores.add(trustStoreHolder);</span>
-<span class="fc" id="L231">            } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {</span>
-<span class="fc" id="L232">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
-<span class="fc" id="L233">            }</span>
+<span class="fc" id="L250">                KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);</span>
+<span class="fc" id="L251">                KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L252">                trustStores.add(trustStoreHolder);</span>
+<span class="fc" id="L253">            } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {</span>
+<span class="fc" id="L254">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
+<span class="fc" id="L255">            }</span>
 
-<span class="fc" id="L235">            return this;</span>
+<span class="fc" id="L257">            return this;</span>
         }
 
-        public Builder withTrustStore(KeyStore trustStore, char[] trustStorePassword) {
-<span class="fc" id="L239">            validateKeyStore(trustStore, trustStorePassword, TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
-<span class="fc" id="L240">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
-<span class="fc" id="L241">            trustStores.add(trustStoreHolder);</span>
+        public Builder withTrustMaterial(KeyStore trustStore, char[] trustStorePassword) {
+<span class="fc" id="L261">            validateKeyStore(trustStore, trustStorePassword, TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L262">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L263">            trustStores.add(trustStoreHolder);</span>
 
-<span class="fc" id="L243">            return this;</span>
+<span class="fc" id="L265">            return this;</span>
         }
 
-        public Builder withIdentity(String identityPath, char[] identityPassword) {
-<span class="fc" id="L247">            return withIdentity(identityPath, identityPassword, KeyStore.getDefaultType());</span>
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword) {
+<span class="fc" id="L269">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, KeyStore.getDefaultType());</span>
         }
 
-        public Builder withIdentity(String identityPath, char[] identityPassword, String identityType) {
-<span class="fc bfc" id="L251" title="All 6 branches covered.">            if (isBlank(identityPath) || isEmpty(identityPassword) || isBlank(identityType)) {</span>
-<span class="fc" id="L252">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L273">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityPassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword, String identityStoreType) {
+<span class="fc" id="L277">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, identityStoreType);</span>
+        }
+
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword, char[] identityPassword, String identityStoreType) {
+<span class="fc bfc" id="L281" title="All 6 branches covered.">            if (isBlank(identityStorePath) || isEmpty(identityStorePassword) || isBlank(identityStoreType)) {</span>
+<span class="fc" id="L282">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
             }
 
             try {
-<span class="fc" id="L256">                KeyStore identity = KeyStoreUtils.loadKeyStore(identityPath, identityPassword, identityType);</span>
-<span class="fc" id="L257">                KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityPassword);</span>
-<span class="fc" id="L258">                identities.add(identityHolder);</span>
-<span class="fc" id="L259">            } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {</span>
-<span class="fc" id="L260">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
-<span class="fc" id="L261">            }</span>
-<span class="fc" id="L262">            return this;</span>
+<span class="fc" id="L286">                KeyStore identity = KeyStoreUtils.loadKeyStore(identityStorePath, identityStorePassword, identityStoreType);</span>
+<span class="fc" id="L287">                KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L288">                identities.add(identityHolder);</span>
+<span class="fc" id="L289">            } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {</span>
+<span class="fc" id="L290">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
+<span class="fc" id="L291">            }</span>
+<span class="fc" id="L292">            return this;</span>
         }
 
-        public Builder withIdentity(Path identityPath, char[] identityPassword) {
-<span class="fc" id="L266">            return withIdentity(identityPath, identityPassword, KeyStore.getDefaultType());</span>
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword) {
+<span class="fc" id="L296">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, KeyStore.getDefaultType());</span>
         }
 
-        public Builder withIdentity(Path identityPath, char[] identityPassword, String identityType) {
-<span class="fc bfc" id="L270" title="All 6 branches covered.">            if (isNull(identityPath) || isEmpty(identityPassword) || isBlank(identityType)) {</span>
-<span class="fc" id="L271">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L300">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityPassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword, String identityStoreType) {
+<span class="fc" id="L304">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, identityStoreType);</span>
+        }
+
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword, char[] identityPassword, String identityStoreType) {
+<span class="fc bfc" id="L308" title="All 6 branches covered.">            if (isNull(identityStorePath) || isEmpty(identityStorePassword) || isBlank(identityStoreType)) {</span>
+<span class="fc" id="L309">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
             }
 
             try {
-<span class="fc" id="L275">                KeyStore identity = KeyStoreUtils.loadKeyStore(identityPath, identityPassword, identityType);</span>
-<span class="fc" id="L276">                KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityPassword);</span>
-<span class="fc" id="L277">                identities.add(identityHolder);</span>
-<span class="fc" id="L278">            } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {</span>
-<span class="fc" id="L279">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
-<span class="fc" id="L280">            }</span>
-<span class="fc" id="L281">            return this;</span>
-        }
-
-        public Builder withIdentity(KeyStore identity, char[] identityPassword) {
-<span class="fc" id="L285">            validateKeyStore(identity, identityPassword, IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
-<span class="fc" id="L286">            KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityPassword);</span>
-<span class="fc" id="L287">            identities.add(identityHolder);</span>
-<span class="fc" id="L288">            return this;</span>
-        }
-
-        public Builder withKeyManager(X509ExtendedKeyManager keyManager) {
-<span class="fc" id="L292">            identityManagers.add(keyManager);</span>
-<span class="fc" id="L293">            return this;</span>
-        }
-
-        private void validateKeyStore(KeyStore keyStore, char[] keyStorePassword, String exceptionMessage) {
-<span class="fc bfc" id="L297" title="All 4 branches covered.">            if (isNull(keyStore) || isEmpty(keyStorePassword)) {</span>
-<span class="fc" id="L298">                throw new GenericKeyStoreException(exceptionMessage);</span>
-            }
-<span class="fc" id="L300">        }</span>
-
-        public Builder withHostnameVerifier(HostnameVerifier hostnameVerifier) {
-<span class="fc" id="L303">            this.hostnameVerifier = hostnameVerifier;</span>
-<span class="fc" id="L304">            return this;</span>
-        }
-
-        public Builder withProtocol(String protocol) {
-<span class="fc" id="L308">            this.protocol = protocol;</span>
-<span class="fc" id="L309">            return this;</span>
-        }
-
-        public Builder withSecureRandom(SecureRandom secureRandom) {
-<span class="fc" id="L313">            this.secureRandom = secureRandom;</span>
-<span class="fc" id="L314">            return this;</span>
-        }
-
-        public Builder withTrustingAllCertificatesWithoutValidation() {
-<span class="fc" id="L318">            trustingAllCertificatesWithoutValidationEnabled = true;</span>
+<span class="fc" id="L313">                KeyStore identity = KeyStoreUtils.loadKeyStore(identityStorePath, identityStorePassword, identityStoreType);</span>
+<span class="fc" id="L314">                KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L315">                identities.add(identityHolder);</span>
+<span class="fc" id="L316">            } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {</span>
+<span class="fc" id="L317">                throw new GenericKeyStoreException(KEY_STORE_LOADING_EXCEPTION, e);</span>
+<span class="fc" id="L318">            }</span>
 <span class="fc" id="L319">            return this;</span>
         }
 
+        public Builder withIdentityMaterial(KeyStore identityStore, char[] identityStorePassword) {
+<span class="fc" id="L323">            return withIdentityMaterial(identityStore, identityStorePassword, identityStorePassword);</span>
+        }
+
+        public Builder withIdentityMaterial(KeyStore identityStore, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L327">            validateKeyStore(identityStore, identityStorePassword, IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L328">            KeyStoreHolder identityHolder = new KeyStoreHolder(identityStore, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L329">            identities.add(identityHolder);</span>
+<span class="fc" id="L330">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(X509ExtendedKeyManager keyManager) {
+<span class="fc" id="L334">            identityManagers.add(keyManager);</span>
+<span class="fc" id="L335">            return this;</span>
+        }
+
+        private void validateKeyStore(KeyStore keyStore, char[] keyStorePassword, String exceptionMessage) {
+<span class="fc bfc" id="L339" title="All 4 branches covered.">            if (isNull(keyStore) || isEmpty(keyStorePassword)) {</span>
+<span class="fc" id="L340">                throw new GenericKeyStoreException(exceptionMessage);</span>
+            }
+<span class="fc" id="L342">        }</span>
+
+        public Builder withHostnameVerifier(HostnameVerifier hostnameVerifier) {
+<span class="fc" id="L345">            this.hostnameVerifier = hostnameVerifier;</span>
+<span class="fc" id="L346">            return this;</span>
+        }
+
+        public Builder withProtocol(String protocol) {
+<span class="fc" id="L350">            this.protocol = protocol;</span>
+<span class="fc" id="L351">            return this;</span>
+        }
+
+        public Builder withSecureRandom(SecureRandom secureRandom) {
+<span class="fc" id="L355">            this.secureRandom = secureRandom;</span>
+<span class="fc" id="L356">            return this;</span>
+        }
+
+        public Builder withTrustingAllCertificatesWithoutValidation() {
+<span class="fc" id="L360">            trustingAllCertificatesWithoutValidationEnabled = true;</span>
+<span class="fc" id="L361">            return this;</span>
+        }
+
+        public Builder withPasswordCaching() {
+<span class="fc" id="L365">            passwordCachingEnabled = true;</span>
+<span class="fc" id="L366">            return this;</span>
+        }
+
         public SSLFactory build() {
-<span class="fc bfc" id="L323" title="All 4 branches covered.">            if (isIdentityMaterialNotPresent() &amp;&amp; isTrustMaterialNotPresent()) {</span>
-<span class="fc" id="L324">                throw new GenericSecurityException(IDENTITY_AND_TRUST_MATERIAL_VALIDATION_EXCEPTION_MESSAGE);</span>
+<span class="fc bfc" id="L370" title="All 4 branches covered.">            if (isIdentityMaterialNotPresent() &amp;&amp; isTrustMaterialNotPresent()) {</span>
+<span class="fc" id="L371">                throw new GenericSecurityException(IDENTITY_AND_TRUST_MATERIAL_VALIDATION_EXCEPTION_MESSAGE);</span>
             }
 
-<span class="fc bfc" id="L327" title="All 2 branches covered.">            if (isTrustMaterialNotPresent()) {</span>
-<span class="fc" id="L328">                throw new GenericKeyStoreException(TRUST_STRATEGY_VALIDATION_EXCEPTION_MESSAGE);</span>
+<span class="fc bfc" id="L374" title="All 2 branches covered.">            if (isTrustMaterialNotPresent()) {</span>
+<span class="fc" id="L375">                throw new GenericKeyStoreException(TRUST_STRATEGY_VALIDATION_EXCEPTION_MESSAGE);</span>
             }
 
-<span class="fc" id="L331">            SSLFactory sslFactory = new SSLFactory(</span>
+<span class="fc" id="L378">            SSLFactory sslFactory = new SSLFactory(</span>
                     protocol,
                     secureRandom,
                     hostnameVerifier,
@@ -337,38 +384,58 @@ public final class SSLFactory {
                     trustStores,
                     trustManagers,
                     includeDefaultJdkTrustStore,
-                    trustingAllCertificatesWithoutValidationEnabled);
+                    trustingAllCertificatesWithoutValidationEnabled,
+                    passwordCachingEnabled
+            );
 
-<span class="pc bpc" id="L342" title="1 of 4 branches missed.">            if (isIdentityMaterialPresent() &amp;&amp; isTrustMaterialPresent()) {</span>
-<span class="fc" id="L343">                sslFactory.createSSLContextWithKeyMaterialAndTrustMaterial();</span>
+<span class="pc bpc" id="L391" title="1 of 4 branches missed.">            if (isIdentityMaterialPresent() &amp;&amp; isTrustMaterialPresent()) {</span>
+<span class="fc" id="L392">                sslFactory.createSSLContextWithKeyMaterialAndTrustMaterial();</span>
             }
 
-<span class="pc bpc" id="L346" title="1 of 4 branches missed.">            if (isIdentityMaterialNotPresent() &amp;&amp; isTrustMaterialPresent()) {</span>
-<span class="fc" id="L347">                sslFactory.createSSLContextWithTrustMaterial();</span>
+<span class="pc bpc" id="L395" title="1 of 4 branches missed.">            if (isIdentityMaterialNotPresent() &amp;&amp; isTrustMaterialPresent()) {</span>
+<span class="fc" id="L396">                sslFactory.createSSLContextWithTrustMaterial();</span>
             }
 
-<span class="fc" id="L350">            return sslFactory;</span>
+<span class="fc" id="L399">            return sslFactory;</span>
         }
 
         private boolean isTrustMaterialPresent() {
-<span class="fc bfc" id="L354" title="All 2 branches covered.">            return !trustStores.isEmpty()</span>
-<span class="fc bfc" id="L355" title="All 6 branches covered.">                    || !trustManagers.isEmpty()</span>
+<span class="fc bfc" id="L403" title="All 2 branches covered.">            return !trustStores.isEmpty()</span>
+<span class="fc bfc" id="L404" title="All 6 branches covered.">                    || !trustManagers.isEmpty()</span>
                     || includeDefaultJdkTrustStore
                     || trustingAllCertificatesWithoutValidationEnabled;
         }
 
         private boolean isTrustMaterialNotPresent() {
-<span class="fc bfc" id="L361" title="All 2 branches covered.">            return !isTrustMaterialPresent();</span>
+<span class="fc bfc" id="L410" title="All 2 branches covered.">            return !isTrustMaterialPresent();</span>
         }
 
         private boolean isIdentityMaterialPresent() {
-<span class="fc bfc" id="L365" title="All 2 branches covered.">            return !identities.isEmpty()</span>
-<span class="fc bfc" id="L366" title="All 2 branches covered.">                    || !identityManagers.isEmpty();</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">            return !identities.isEmpty()</span>
+<span class="fc bfc" id="L415" title="All 2 branches covered.">                    || !identityManagers.isEmpty();</span>
         }
 
         private boolean isIdentityMaterialNotPresent() {
-<span class="fc bfc" id="L370" title="All 2 branches covered.">            return !isIdentityMaterialPresent();</span>
+<span class="fc bfc" id="L419" title="All 2 branches covered.">            return !isIdentityMaterialPresent();</span>
         }
+
+        private boolean isEmpty(char[] chars) {
+<span class="fc bfc" id="L423" title="All 2 branches covered.">            int length = isNull(chars) ? 0 : Array.getLength(chars);</span>
+<span class="fc bfc" id="L424" title="All 2 branches covered.">            return length == 0;</span>
+        }
+
+        private boolean isBlank(CharSequence charSequence) {
+<span class="fc bfc" id="L428" title="All 2 branches covered.">            int length = isNull(charSequence) ? 0 : charSequence.length();</span>
+<span class="fc bfc" id="L429" title="All 2 branches covered.">            if (length != 0) {</span>
+<span class="fc bfc" id="L430" title="All 2 branches covered.">                for (int i = 0; i &lt; length; ++i) {</span>
+<span class="fc bfc" id="L431" title="All 2 branches covered.">                    if (!Character.isWhitespace(charSequence.charAt(i))) {</span>
+<span class="fc" id="L432">                        return false;</span>
+                    }
+                }
+            }
+<span class="fc" id="L436">            return true;</span>
+        }
+
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -7,7 +7,6 @@ import nl.altindag.sslcontext.model.KeyStoreHolder;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509ExtendedKeyManager;
-import javax.net.ssl.X509KeyManager;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -23,38 +22,38 @@ public final class KeyManagerUtils {
     private KeyManagerUtils() {}
 
     public static X509ExtendedKeyManager combine(X509ExtendedKeyManager... keyManagers) {
-<span class="fc" id="L26">        return combine(Arrays.asList(keyManagers));</span>
+<span class="fc" id="L25">        return combine(Arrays.asList(keyManagers));</span>
     }
 
     public static X509ExtendedKeyManager combine(List&lt;? extends X509ExtendedKeyManager&gt; keyManagers) {
-<span class="fc" id="L30">        return CompositeX509ExtendedKeyManager.builder()</span>
-<span class="fc" id="L31">                .withKeyManagers(keyManagers)</span>
-<span class="fc" id="L32">                .build();</span>
+<span class="fc" id="L29">        return CompositeX509ExtendedKeyManager.builder()</span>
+<span class="fc" id="L30">                .withKeyManagers(keyManagers)</span>
+<span class="fc" id="L31">                .build();</span>
     }
 
     public static X509ExtendedKeyManager createKeyManager(KeyStoreHolder... keyStoreHolders) {
-<span class="fc" id="L36">        return Arrays.stream(keyStoreHolders)</span>
-<span class="fc" id="L37">                .map(keyStoreHolder -&gt; createKeyManager(keyStoreHolder.getKeyStore(), keyStoreHolder.getKeyStorePassword()))</span>
-<span class="fc" id="L38">                .collect(collectingAndThen(toList(), KeyManagerUtils::combine));</span>
+<span class="fc" id="L35">        return Arrays.stream(keyStoreHolders)</span>
+<span class="fc" id="L36">                .map(keyStoreHolder -&gt; createKeyManager(keyStoreHolder.getKeyStore(), keyStoreHolder.getKeyPassword()))</span>
+<span class="fc" id="L37">                .collect(collectingAndThen(toList(), KeyManagerUtils::combine));</span>
     }
 
-    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyStorePassword) {
-<span class="fc" id="L42">        return createKeyManager(keyStore, keyStorePassword, KeyManagerFactory.getDefaultAlgorithm());</span>
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword) {
+<span class="fc" id="L41">        return createKeyManager(keyStore, keyPassword, KeyManagerFactory.getDefaultAlgorithm());</span>
     }
 
-    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyStorePassword, String algorithm) {
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword, String keyManagerFactoryAlgorithm) {
         try {
-<span class="fc" id="L47">            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(algorithm);</span>
-<span class="fc" id="L48">            keyManagerFactory.init(keyStore, keyStorePassword);</span>
+<span class="fc" id="L46">            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);</span>
+<span class="fc" id="L47">            keyManagerFactory.init(keyStore, keyPassword);</span>
 
-<span class="fc" id="L50">            return Arrays.stream(keyManagerFactory.getKeyManagers())</span>
-<span class="fc" id="L51">                    .filter(keyManager -&gt; keyManager instanceof X509ExtendedKeyManager)</span>
-<span class="fc" id="L52">                    .map(keyManager -&gt; (X509ExtendedKeyManager) keyManager)</span>
-<span class="fc" id="L53">                    .findFirst()</span>
-<span class="pc" id="L54">                    .orElseThrow(() -&gt; new GenericKeyStoreException(&quot;Could not create a KeyManager with the provided KeyStore, password and KeyManager algorithm&quot;));</span>
+<span class="fc" id="L49">            return Arrays.stream(keyManagerFactory.getKeyManagers())</span>
+<span class="fc" id="L50">                    .filter(keyManager -&gt; keyManager instanceof X509ExtendedKeyManager)</span>
+<span class="fc" id="L51">                    .map(keyManager -&gt; (X509ExtendedKeyManager) keyManager)</span>
+<span class="fc" id="L52">                    .findFirst()</span>
+<span class="pc" id="L53">                    .orElseThrow(() -&gt; new GenericKeyStoreException(&quot;Could not create a KeyManager with the provided KeyStore, password and KeyManager algorithm&quot;));</span>
 
-<span class="fc" id="L56">        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {</span>
-<span class="fc" id="L57">            throw new GenericSecurityException(e);</span>
+<span class="fc" id="L55">        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {</span>
+<span class="fc" id="L56">            throw new GenericSecurityException(e);</span>
         }
     }
 
