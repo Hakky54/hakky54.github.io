@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TrustManagerUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SSLContext Kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.sslcontext.util</a> &gt; <span class="el_source">TrustManagerUtils.java</span></div><h1>TrustManagerUtils.java</h1><pre class="source lang-java linenums">package nl.altindag.sslcontext.util;
 
-import nl.altindag.sslcontext.exception.GenericKeyStoreException;
 import nl.altindag.sslcontext.exception.GenericSecurityException;
 import nl.altindag.sslcontext.model.KeyStoreHolder;
 import nl.altindag.sslcontext.trustmanager.CompositeX509ExtendedTrustManager;
+import nl.altindag.sslcontext.trustmanager.X509TrustManagerWrapper;
 
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,49 +24,94 @@ public final class TrustManagerUtils {
     private TrustManagerUtils() {}
 
     public static X509ExtendedTrustManager combine(X509ExtendedTrustManager... trustManagers) {
-<span class="fc" id="L22">        return combine(Arrays.asList(trustManagers));</span>
+<span class="fc" id="L27">        return combine(Arrays.asList(trustManagers));</span>
     }
 
     public static X509ExtendedTrustManager combine(List&lt;? extends X509ExtendedTrustManager&gt; trustManagers) {
-<span class="fc" id="L26">        return CompositeX509ExtendedTrustManager.builder()</span>
-<span class="fc" id="L27">                .withTrustManagers(trustManagers)</span>
-<span class="fc" id="L28">                .build();</span>
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (trustManagers.size() == 1) {</span>
+<span class="fc" id="L32">            return trustManagers.get(0);</span>
+        }
+
+<span class="fc" id="L35">        return CompositeX509ExtendedTrustManager.builder()</span>
+<span class="fc" id="L36">                .withTrustManagers(trustManagers)</span>
+<span class="fc" id="L37">                .build();</span>
     }
 
     public static X509ExtendedTrustManager createTrustManagerWithJdkTrustedCertificates() {
-<span class="fc" id="L32">        return createTrustManager((KeyStore) null);</span>
+<span class="fc" id="L41">        return createTrustManager((KeyStore) null);</span>
+    }
+
+    public static X509ExtendedTrustManager createTrustManagerWithSystemTrustedCertificates() {
+        try {
+<span class="fc" id="L46">            KeyStore[] trustStores = KeyStoreUtils.loadSystemKeyStores().toArray(new KeyStore[]{});</span>
+<span class="fc" id="L47">            return createTrustManager(trustStores);</span>
+<span class="fc" id="L48">        } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {</span>
+<span class="fc" id="L49">            throw new GenericSecurityException(e);</span>
+        }
     }
 
     public static X509ExtendedTrustManager createTrustManager(KeyStoreHolder... trustStoreHolders) {
-<span class="fc" id="L36">        return Arrays.stream(trustStoreHolders)</span>
-<span class="fc" id="L37">                .map(KeyStoreHolder::getKeyStore)</span>
-<span class="fc" id="L38">                .map(TrustManagerUtils::createTrustManager)</span>
-<span class="fc" id="L39">                .collect(Collectors.collectingAndThen(Collectors.toList(), TrustManagerUtils::combine));</span>
+<span class="fc" id="L54">        return Arrays.stream(trustStoreHolders)</span>
+<span class="fc" id="L55">                .map(KeyStoreHolder::getKeyStore)</span>
+<span class="fc" id="L56">                .map(TrustManagerUtils::createTrustManager)</span>
+<span class="fc" id="L57">                .collect(Collectors.collectingAndThen(Collectors.toList(), TrustManagerUtils::combine));</span>
     }
 
     public static X509ExtendedTrustManager createTrustManager(KeyStore... trustStores) {
-<span class="fc" id="L43">        return Arrays.stream(trustStores)</span>
-<span class="fc" id="L44">                .map(TrustManagerUtils::createTrustManager)</span>
-<span class="fc" id="L45">                .collect(Collectors.collectingAndThen(Collectors.toList(), TrustManagerUtils::combine));</span>
+<span class="fc" id="L61">        return Arrays.stream(trustStores)</span>
+<span class="fc" id="L62">                .map(TrustManagerUtils::createTrustManager)</span>
+<span class="fc" id="L63">                .collect(Collectors.collectingAndThen(Collectors.toList(), TrustManagerUtils::combine));</span>
     }
 
     public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore) {
-<span class="fc" id="L49">        return createTrustManager(trustStore, TrustManagerFactory.getDefaultAlgorithm());</span>
+<span class="fc" id="L67">        return createTrustManager(trustStore, TrustManagerFactory.getDefaultAlgorithm());</span>
     }
 
     public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, String trustManagerFactoryAlgorithm) {
         try {
-<span class="fc" id="L54">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm);</span>
-<span class="fc" id="L55">            trustManagerFactory.init(trustStore);</span>
+<span class="fc" id="L72">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm);</span>
+<span class="fc" id="L73">            return createTrustManager(trustStore, trustManagerFactory);</span>
+<span class="fc" id="L74">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="fc" id="L75">            throw new GenericSecurityException(e);</span>
+        }
+    }
 
-<span class="fc" id="L57">            return Arrays.stream(trustManagerFactory.getTrustManagers())</span>
-<span class="fc" id="L58">                    .filter(trustManager -&gt; trustManager instanceof X509ExtendedTrustManager)</span>
-<span class="fc" id="L59">                    .map(trustManager -&gt; (X509ExtendedTrustManager) trustManager)</span>
-<span class="fc" id="L60">                    .findFirst()</span>
-<span class="pc" id="L61">                    .orElseThrow(() -&gt; new GenericKeyStoreException(&quot;Could not create a TrustManager with the provided TrustStore and TrustManager algorithm&quot;));</span>
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, String trustManagerFactoryAlgorithm, String securityProviderName) {
+        try {
+<span class="fc" id="L81">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm, securityProviderName);</span>
+<span class="fc" id="L82">            return createTrustManager(trustStore, trustManagerFactory);</span>
+<span class="fc" id="L83">        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {</span>
+<span class="fc" id="L84">            throw new GenericSecurityException(e);</span>
+        }
+    }
 
-<span class="fc" id="L63">        } catch (KeyStoreException | NoSuchAlgorithmException e) {</span>
-<span class="fc" id="L64">            throw new GenericSecurityException(e);</span>
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, String trustManagerFactoryAlgorithm, Provider securityProvider) {
+        try {
+<span class="fc" id="L90">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm, securityProvider);</span>
+<span class="fc" id="L91">            return createTrustManager(trustStore, trustManagerFactory);</span>
+<span class="fc" id="L92">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="fc" id="L93">            throw new GenericSecurityException(e);</span>
+        }
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, TrustManagerFactory trustManagerFactory) {
+        try {
+<span class="fc" id="L99">            trustManagerFactory.init(trustStore);</span>
+<span class="fc" id="L100">            return Arrays.stream(trustManagerFactory.getTrustManagers())</span>
+<span class="fc" id="L101">                    .filter(trustManager -&gt; trustManager instanceof X509TrustManager)</span>
+<span class="fc" id="L102">                    .map(trustManager -&gt; (X509TrustManager) trustManager)</span>
+<span class="fc" id="L103">                    .map(TrustManagerUtils::wrapIfNeeded)</span>
+<span class="fc" id="L104">                    .collect(Collectors.collectingAndThen(Collectors.toList(), TrustManagerUtils::combine));</span>
+<span class="fc" id="L105">        } catch (KeyStoreException e) {</span>
+<span class="fc" id="L106">            throw new GenericSecurityException(e);</span>
+        }
+    }
+
+    public static X509ExtendedTrustManager wrapIfNeeded(X509TrustManager trustManager) {
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (trustManager instanceof X509ExtendedTrustManager) {</span>
+<span class="fc" id="L112">            return (X509ExtendedTrustManager) trustManager;</span>
+        } else {
+<span class="fc" id="L114">            return new X509TrustManagerWrapper(trustManager);</span>
         }
     }
 

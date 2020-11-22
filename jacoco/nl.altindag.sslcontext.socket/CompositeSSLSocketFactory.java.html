@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompositeSSLSocketFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">SSLContext Kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.sslcontext.socket</a> &gt; <span class="el_source">CompositeSSLSocketFactory.java</span></div><h1>CompositeSSLSocketFactory.java</h1><pre class="source lang-java linenums">package nl.altindag.sslcontext.socket;
+
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
+public final class CompositeSSLSocketFactory extends SSLSocketFactory {
+
+    private final SSLSocketFactory sslSocketFactory;
+    private final SSLParameters sslParameters;
+
+<span class="fc" id="L17">    public CompositeSSLSocketFactory(SSLSocketFactory sslSocketFactory, SSLParameters sslParameters) {</span>
+<span class="fc" id="L18">        this.sslSocketFactory = sslSocketFactory;</span>
+<span class="fc" id="L19">        this.sslParameters = sslParameters;</span>
+<span class="fc" id="L20">    }</span>
+
+    @Override
+    public String[] getDefaultCipherSuites() {
+<span class="fc" id="L24">        return sslParameters.getCipherSuites();</span>
+    }
+
+    @Override
+    public String[] getSupportedCipherSuites() {
+<span class="fc" id="L29">        return sslParameters.getCipherSuites();</span>
+    }
+
+    @Override
+    public Socket createSocket() throws IOException {
+<span class="fc" id="L34">        Socket socket = sslSocketFactory.createSocket();</span>
+<span class="fc" id="L35">        return withSslParameters(socket);</span>
+    }
+
+    @Override
+    public Socket createSocket(Socket socket, InputStream inputStream, boolean autoClosable) throws IOException {
+<span class="fc" id="L40">        Socket newSocket = sslSocketFactory.createSocket(socket, inputStream, autoClosable);</span>
+<span class="fc" id="L41">        return withSslParameters(newSocket);</span>
+    }
+
+    @Override
+    public Socket createSocket(Socket socket, String host, int port, boolean autoClosable) throws IOException {
+<span class="fc" id="L46">        Socket newSocket = sslSocketFactory.createSocket(socket, host, port, autoClosable);</span>
+<span class="fc" id="L47">        return withSslParameters(newSocket);</span>
+    }
+
+    @Override
+    public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+<span class="fc" id="L52">        Socket socket = sslSocketFactory.createSocket(host, port);</span>
+<span class="fc" id="L53">        return withSslParameters(socket);</span>
+    }
+
+    @Override
+    public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException, UnknownHostException {
+<span class="fc" id="L58">        Socket socket = sslSocketFactory.createSocket(host, port, localAddress, localPort);</span>
+<span class="fc" id="L59">        return withSslParameters(socket);</span>
+    }
+
+    @Override
+    public Socket createSocket(InetAddress address, int port) throws IOException {
+<span class="fc" id="L64">        Socket socket = sslSocketFactory.createSocket(address, port);</span>
+<span class="fc" id="L65">        return withSslParameters(socket);</span>
+    }
+
+    @Override
+    public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+<span class="fc" id="L70">        Socket socket = sslSocketFactory.createSocket(address, port, localAddress, localPort);</span>
+<span class="fc" id="L71">        return withSslParameters(socket);</span>
+    }
+
+    private Socket withSslParameters(Socket socket) {
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        if (socket instanceof SSLSocket) {</span>
+<span class="fc" id="L76">            SSLSocket sslSocket = (SSLSocket) socket;</span>
+<span class="fc" id="L77">            sslSocket.setSSLParameters(sslParameters);</span>
+        }
+<span class="fc" id="L79">        return socket;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

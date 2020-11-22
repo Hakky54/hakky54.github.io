@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Represents an ordered list of {@link X509ExtendedKeyManager} with most-preferred managers first.
@@ -46,9 +47,9 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      *
      * @param keyManagers the {@link X509ExtendedKeyManager}, ordered with the most-preferred managers first.
      */
-<span class="fc" id="L49">    public CompositeX509ExtendedKeyManager(List&lt;? extends X509ExtendedKeyManager&gt; keyManagers) {</span>
-<span class="fc" id="L50">        this.keyManagers = Collections.unmodifiableList(keyManagers);</span>
-<span class="fc" id="L51">    }</span>
+<span class="fc" id="L50">    public CompositeX509ExtendedKeyManager(List&lt;? extends X509ExtendedKeyManager&gt; keyManagers) {</span>
+<span class="fc" id="L51">        this.keyManagers = Collections.unmodifiableList(keyManagers);</span>
+<span class="fc" id="L52">    }</span>
 
     /**
      * Chooses the first non-null client alias returned from the delegate
@@ -56,13 +57,13 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
-<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L60">            String alias = keyManager.chooseClientAlias(keyType, issuers, socket);</span>
-<span class="fc bfc" id="L61" title="All 2 branches covered.">            if (alias != null) {</span>
-<span class="fc" id="L62">                return alias;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L61">            String alias = keyManager.chooseClientAlias(keyType, issuers, socket);</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L63">                return alias;</span>
             }
-<span class="fc" id="L64">        }</span>
-<span class="fc" id="L65">        return null;</span>
+<span class="fc" id="L65">        }</span>
+<span class="fc" id="L66">        return null;</span>
     }
 
     /**
@@ -71,13 +72,13 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public String chooseEngineClientAlias(String[] keyTypes, Principal[] issuers, SSLEngine sslEngine) {
-<span class="fc bfc" id="L74" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L75">            String alias = keyManager.chooseEngineClientAlias(keyTypes, issuers, sslEngine);</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">            if (alias != null) {</span>
-<span class="fc" id="L77">                return alias;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L76">            String alias = keyManager.chooseEngineClientAlias(keyTypes, issuers, sslEngine);</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L78">                return alias;</span>
             }
-<span class="fc" id="L79">        }</span>
-<span class="fc" id="L80">        return null;</span>
+<span class="fc" id="L80">        }</span>
+<span class="fc" id="L81">        return null;</span>
     }
 
     /**
@@ -86,13 +87,13 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
-<span class="fc bfc" id="L89" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L90">            String alias = keyManager.chooseServerAlias(keyType, issuers, socket);</span>
-<span class="fc bfc" id="L91" title="All 2 branches covered.">            if (alias != null) {</span>
-<span class="fc" id="L92">                return alias;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L91">            String alias = keyManager.chooseServerAlias(keyType, issuers, socket);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L93">                return alias;</span>
             }
-<span class="fc" id="L94">        }</span>
-<span class="fc" id="L95">        return null;</span>
+<span class="fc" id="L95">        }</span>
+<span class="fc" id="L96">        return null;</span>
     }
 
     /**
@@ -101,13 +102,13 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine sslEngine) {
-<span class="fc bfc" id="L104" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L105">            String alias = keyManager.chooseEngineServerAlias(keyType, issuers, sslEngine);</span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">            if (alias != null) {</span>
-<span class="fc" id="L107">                return alias;</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L106">            String alias = keyManager.chooseEngineServerAlias(keyType, issuers, sslEngine);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L108">                return alias;</span>
             }
-<span class="fc" id="L109">        }</span>
-<span class="fc" id="L110">        return null;</span>
+<span class="fc" id="L110">        }</span>
+<span class="fc" id="L111">        return null;</span>
     }
 
     /**
@@ -116,13 +117,13 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public PrivateKey getPrivateKey(String alias) {
-<span class="fc bfc" id="L119" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L120">            PrivateKey privateKey = keyManager.getPrivateKey(alias);</span>
-<span class="fc bfc" id="L121" title="All 2 branches covered.">            if (privateKey != null) {</span>
-<span class="fc" id="L122">                return privateKey;</span>
+<span class="fc bfc" id="L120" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L121">            PrivateKey privateKey = keyManager.getPrivateKey(alias);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">            if (privateKey != null) {</span>
+<span class="fc" id="L123">                return privateKey;</span>
             }
-<span class="fc" id="L124">        }</span>
-<span class="fc" id="L125">        return null;</span>
+<span class="fc" id="L125">        }</span>
+<span class="fc" id="L126">        return null;</span>
     }
 
     /**
@@ -131,13 +132,13 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public X509Certificate[] getCertificateChain(String alias) {
-<span class="fc bfc" id="L134" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L135">            X509Certificate[] chain = keyManager.getCertificateChain(alias);</span>
-<span class="pc bpc" id="L136" title="1 of 4 branches missed.">            if (chain != null &amp;&amp; chain.length &gt; 0) {</span>
-<span class="fc" id="L137">                return chain;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L136">            X509Certificate[] chain = keyManager.getCertificateChain(alias);</span>
+<span class="fc bfc" id="L137" title="All 4 branches covered.">            if (chain != null &amp;&amp; chain.length &gt; 0) {</span>
+<span class="fc" id="L138">                return chain;</span>
             }
-<span class="fc" id="L139">        }</span>
-<span class="fc" id="L140">        return null;</span>
+<span class="fc" id="L140">        }</span>
+<span class="fc" id="L141">        return null;</span>
     }
 
     /**
@@ -146,11 +147,12 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public String[] getClientAliases(String keyType, Principal[] issuers) {
-<span class="fc" id="L149">        List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L151">            aliases.addAll(Arrays.asList(keyManager.getClientAliases(keyType, issuers)));</span>
-<span class="fc" id="L152">        }</span>
-<span class="fc" id="L153">        return emptyToNull(aliases.toArray(new String[]{}));</span>
+<span class="fc" id="L150">        List&lt;String&gt; clientAliases = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L152">            Optional.ofNullable(keyManager.getClientAliases(keyType, issuers))</span>
+<span class="fc" id="L153">                    .ifPresent(aliases -&gt; clientAliases.addAll(Arrays.asList(aliases)));</span>
+<span class="fc" id="L154">        }</span>
+<span class="fc" id="L155">        return emptyToNull(clientAliases.toArray(new String[]{}));</span>
     }
 
     /**
@@ -159,56 +161,57 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
      */
     @Override
     public String[] getServerAliases(String keyType, Principal[] issuers) {
-<span class="fc" id="L162">        List&lt;String&gt; aliases = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L163" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
-<span class="fc" id="L164">            aliases.addAll(Arrays.asList(keyManager.getServerAliases(keyType, issuers)));</span>
-<span class="fc" id="L165">        }</span>
-<span class="fc" id="L166">        return emptyToNull(aliases.toArray(new String[]{}));</span>
+<span class="fc" id="L164">        List&lt;String&gt; serverAliases = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L166">            Optional.ofNullable(keyManager.getServerAliases(keyType, issuers))</span>
+<span class="fc" id="L167">                    .ifPresent(aliases -&gt; serverAliases.addAll(Arrays.asList(aliases)));</span>
+<span class="fc" id="L168">        }</span>
+<span class="fc" id="L169">        return emptyToNull(serverAliases.toArray(new String[]{}));</span>
     }
 
     public int size() {
-<span class="fc" id="L170">        return keyManagers.size();</span>
+<span class="fc" id="L173">        return keyManagers.size();</span>
     }
 
     private &lt;T&gt; T[] emptyToNull(T[] arr) {
-<span class="pc bpc" id="L174" title="1 of 2 branches missed.">        return (arr.length == 0) ? null : arr;</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        return (arr.length == 0) ? null : arr;</span>
     }
 
     public static Builder builder() {
-<span class="fc" id="L178">        return new Builder();</span>
+<span class="fc" id="L181">        return new Builder();</span>
     }
 
-<span class="fc" id="L181">    public static final class Builder {</span>
+<span class="fc" id="L184">    public static final class Builder {</span>
 
-<span class="fc" id="L183">        private final List&lt;X509ExtendedKeyManager&gt; keyManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L186">        private final List&lt;X509ExtendedKeyManager&gt; keyManagers = new ArrayList&lt;&gt;();</span>
 
         public &lt;T extends X509ExtendedKeyManager&gt; Builder withKeyManagers(T... keyManagers) {
-<span class="fc" id="L186">            return withKeyManagers(Arrays.asList(keyManagers));</span>
+<span class="fc" id="L189">            return withKeyManagers(Arrays.asList(keyManagers));</span>
         }
 
         public Builder withKeyManagers(List&lt;? extends X509ExtendedKeyManager&gt; keyManagers) {
-<span class="fc" id="L190">            this.keyManagers.addAll(keyManagers);</span>
-<span class="fc" id="L191">            return this;</span>
+<span class="fc" id="L193">            this.keyManagers.addAll(keyManagers);</span>
+<span class="fc" id="L194">            return this;</span>
         }
 
         public &lt;T extends KeyStoreHolder&gt; Builder withIdentities(T... identities) {
-<span class="fc" id="L195">            return withIdentities(Arrays.asList(identities));</span>
+<span class="fc" id="L198">            return withIdentities(Arrays.asList(identities));</span>
         }
 
         public Builder withIdentities(List&lt;? extends KeyStoreHolder&gt; identities) {
-<span class="fc bfc" id="L199" title="All 2 branches covered.">            for (KeyStoreHolder identity : identities) {</span>
-<span class="fc" id="L200">                this.keyManagers.add(KeyManagerUtils.createKeyManager(identity.getKeyStore(), identity.getKeyPassword()));</span>
-<span class="fc" id="L201">            }</span>
-<span class="fc" id="L202">            return this;</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">            for (KeyStoreHolder identity : identities) {</span>
+<span class="fc" id="L203">                this.keyManagers.add(KeyManagerUtils.createKeyManager(identity.getKeyStore(), identity.getKeyPassword()));</span>
+<span class="fc" id="L204">            }</span>
+<span class="fc" id="L205">            return this;</span>
         }
 
         public &lt;T extends KeyStore&gt; Builder withIdentity(T identity, char[] identityPassword, String keyManagerAlgorithm) {
-<span class="fc" id="L206">            this.keyManagers.add(KeyManagerUtils.createKeyManager(identity, identityPassword, keyManagerAlgorithm));</span>
-<span class="fc" id="L207">            return this;</span>
+<span class="fc" id="L209">            this.keyManagers.add(KeyManagerUtils.createKeyManager(identity, identityPassword, keyManagerAlgorithm));</span>
+<span class="fc" id="L210">            return this;</span>
         }
 
         public CompositeX509ExtendedKeyManager build() {
-<span class="fc" id="L211">            return new CompositeX509ExtendedKeyManager(keyManagers);</span>
+<span class="fc" id="L214">            return new CompositeX509ExtendedKeyManager(keyManagers);</span>
         }
 
     }
