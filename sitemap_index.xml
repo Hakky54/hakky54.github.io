@@ -1,0 +1,1570 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+<url>
+  <loc>https://sslcontext-kickstart.com/</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/history.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/usage.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/akka.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/apache.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/async-http-client.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/dispatch-reboot.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/feign.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/fuel.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/google.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/http4s-blaze.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/http4s-java-net.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/jdk.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/jersey.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/jetty.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/kohttp.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/ktor-android.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/ktor-apache.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/ktor-okhttp.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/methanol.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/netty.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/okhttp.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/old-jdk.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/old-jersey.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/requests-scala.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/retrofit.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/scalaj.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/spring-resttemplate.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/spring-webclient-jetty.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/spring-webclient-netty.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/sttp.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/finagle.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/featherbed.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/client/unirest.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/project-info.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/dependencies.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/dependency-info.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/dependency-management.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/distribution-management.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/licenses.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/plugin-management.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/plugins.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/scm.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/team.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/project-reports.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/failsafe-report.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/surefire-report.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/overview-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/overview-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/allclasses-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/overview-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/overview-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/allclasses-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/overview-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/overview-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/allclasses-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/jacoco-sessions.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.keymanager/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.socket/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.model/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/index.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/overview-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/deprecated-list.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index-all.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/help-doc.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?overview-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/allclasses-noframe.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/model/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/model/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/CertificateUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/CompositeSSLServerSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/CompositeSSLSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/CompositeX509ExtendedKeyManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/CompositeX509ExtendedKeyManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/CompositeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/CompositeX509ExtendedTrustManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/GenericKeyStoreException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/GenericSecurityException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/GenericSSLContextException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/IOUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/KeyManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/model/KeyStoreHolder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/KeyStoreUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/SSLFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/SSLFactory.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/TrustManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/UnsafeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/X509KeyManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/X509TrustManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/index.html?overview-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/keymanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/socket/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/trustmanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/keymanager/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/socket/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/trustmanager/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/CertificateUtilsShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/socket/CompositeSSLServerSocketFactoryShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/socket/CompositeSSLSocketFactoryShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/keymanager/CompositeX509ExtendedKeyManagerShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/trustmanager/CompositeX509ExtendedTrustManagerShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/IOUtilsShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/KeyManagerUtilsShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/trustmanager/KeyStoreTestUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/KeyStoreUtilsShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/SSLFactoryIT.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/SSLFactoryShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/TestConstants.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/util/TrustManagerUtilsShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/trustmanager/UnsafeX509ExtendedTrustManagerShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/keymanager/X509KeyManagerWrapperShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref-test/nl/altindag/sslcontext/trustmanager/X509TrustManagerWrapperShould.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/index.html?overview-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/exception/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/keymanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/model/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/socket/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/trustmanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/exception/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/keymanager/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/model/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/socket/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/trustmanager/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/package-frame.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/CertificateUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/socket/CompositeSSLServerSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/socket/CompositeSSLSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/keymanager/CompositeX509ExtendedKeyManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/trustmanager/CompositeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/exception/GenericKeyStoreException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/exception/GenericSSLContextException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/exception/GenericSecurityException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/IOUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/KeyManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/model/KeyStoreHolder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/KeyStoreUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/SSLFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/util/TrustManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/trustmanager/UnsafeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/keymanager/X509KeyManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/xref/nl/altindag/sslcontext/trustmanager/X509TrustManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext/SSLFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext/SSLFactory$Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/GenericKeyStoreException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/GenericSSLContextException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/GenericSecurityException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.keymanager/CompositeX509ExtendedKeyManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.keymanager/CompositeX509ExtendedKeyManager$Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.model/KeyStoreHolder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.socket/CompositeSSLServerSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.socket/CompositeSSLSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/CompositeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/CompositeX509ExtendedTrustManager$Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/UnsafeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/CertificateUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/IOUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/KeyManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/KeyStoreUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/TrustManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.keymanager/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.socket/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.model/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/index.source.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?overview-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/model/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?deprecated-list.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?index-all.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?help-doc.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/constant-values.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/model/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/model/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/package-summary.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/class-use/CertificateUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/CertificateUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/class-use/CompositeSSLServerSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/CompositeSSLServerSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/socket/class-use/CompositeSSLSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/CompositeSSLSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/class-use/CompositeX509ExtendedKeyManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/CompositeX509ExtendedKeyManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/class-use/CompositeX509ExtendedKeyManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/CompositeX509ExtendedKeyManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/class-use/CompositeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/CompositeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/class-use/CompositeX509ExtendedTrustManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/CompositeX509ExtendedTrustManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/class-use/GenericKeyStoreException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/GenericKeyStoreException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/serialized-form.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/class-use/GenericSecurityException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/GenericSecurityException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/exception/class-use/GenericSSLContextException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/GenericSSLContextException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/class-use/IOUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/IOUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/class-use/KeyManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/KeyManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/model/class-use/KeyStoreHolder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/model/KeyStoreHolder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/class-use/KeyStoreUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/KeyStoreUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/class-use/SSLFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/SSLFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/class-use/SSLFactory.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/SSLFactory.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/util/class-use/TrustManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/TrustManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/class-use/UnsafeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/UnsafeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/keymanager/class-use/X509KeyManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/X509KeyManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/nl/altindag/sslcontext/trustmanager/class-use/X509TrustManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/X509TrustManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext/SSLFactory.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/GenericKeyStoreException.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/GenericSSLContextException.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.exception/GenericSecurityException.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.keymanager/CompositeX509ExtendedKeyManager.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.model/KeyStoreHolder.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.socket/CompositeSSLServerSocketFactory.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.socket/CompositeSSLSocketFactory.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/CompositeX509ExtendedTrustManager.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.trustmanager/UnsafeX509ExtendedTrustManager.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/CertificateUtils.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/IOUtils.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/KeyManagerUtils.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/KeyStoreUtils.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/jacoco/nl.altindag.sslcontext.util/TrustManagerUtils.java.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/model/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/package-tree.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?constant-values.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/model/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/package-use.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/class-use/CertificateUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/class-use/CompositeSSLServerSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/socket/class-use/CompositeSSLSocketFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/class-use/CompositeX509ExtendedKeyManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/class-use/CompositeX509ExtendedKeyManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/class-use/CompositeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/class-use/CompositeX509ExtendedTrustManager.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/class-use/GenericKeyStoreException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?serialized-form.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/class-use/GenericSecurityException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/exception/class-use/GenericSSLContextException.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/class-use/IOUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/class-use/KeyManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/model/class-use/KeyStoreHolder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/class-use/KeyStoreUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/class-use/SSLFactory.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/class-use/SSLFactory.Builder.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/util/class-use/TrustManagerUtils.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/class-use/UnsafeX509ExtendedTrustManager.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/keymanager/class-use/X509KeyManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+<url>
+  <loc>https://sslcontext-kickstart.com/apidocs/index.html?nl/altindag/sslcontext/trustmanager/class-use/X509TrustManagerWrapper.html</loc>
+  <lastmod>2020-11-22T08:08:06+00:00</lastmod>
+  <priority>0.33</priority>
+</url>
+
+
+</urlset>
