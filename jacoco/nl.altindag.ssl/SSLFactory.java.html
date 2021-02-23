@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl</a> &gt; <span class="el_source">SSLFactory.java</span></div><h1>SSLFactory.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl;
+
+import nl.altindag.ssl.exception.GenericKeyStoreException;
+import nl.altindag.ssl.exception.GenericSecurityException;
+import nl.altindag.ssl.model.IdentityMaterial;
+import nl.altindag.ssl.model.KeyStoreHolder;
+import nl.altindag.ssl.model.SSLMaterial;
+import nl.altindag.ssl.model.TrustMaterial;
+import nl.altindag.ssl.util.KeyManagerUtils;
+import nl.altindag.ssl.util.KeyStoreUtils;
+import nl.altindag.ssl.util.SSLContextUtils;
+import nl.altindag.ssl.util.SSLParametersUtils;
+import nl.altindag.ssl.util.SocketUtils;
+import nl.altindag.ssl.util.StringUtils;
+import nl.altindag.ssl.util.TrustManagerUtils;
+import nl.altindag.ssl.util.UriUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509KeyManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Path;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
+/**
+ * @author Hakan Altindag
+ */
+public final class SSLFactory {
+
+<span class="fc" id="L75">    private static final Logger LOGGER = LoggerFactory.getLogger(SSLFactory.class);</span>
+
+    private final SSLMaterial sslMaterial;
+
+<span class="fc" id="L79">    private SSLFactory(SSLMaterial sslMaterial) {</span>
+<span class="fc" id="L80">        this.sslMaterial = sslMaterial;</span>
+<span class="fc" id="L81">    }</span>
+
+    public List&lt;KeyStoreHolder&gt; getIdentities() {
+<span class="fc" id="L84">        return sslMaterial.getIdentityMaterial().getIdentities();</span>
+    }
+
+    public List&lt;KeyStoreHolder&gt; getTrustStores() {
+<span class="fc" id="L88">        return sslMaterial.getTrustMaterial().getTrustStores();</span>
+    }
+
+    public SSLContext getSslContext() {
+<span class="fc" id="L92">        return sslMaterial.getSslContext();</span>
+    }
+
+    public SSLSocketFactory getSslSocketFactory() {
+<span class="fc" id="L96">        return SocketUtils.createSslSocketFactory(</span>
+<span class="fc" id="L97">                sslMaterial.getSslContext().getSocketFactory(),</span>
+<span class="fc" id="L98">                getSslParameters()</span>
+        );
+    }
+
+    public SSLServerSocketFactory getSslServerSocketFactory() {
+<span class="fc" id="L103">        return SocketUtils.createSslServerSocketFactory(</span>
+<span class="fc" id="L104">                sslMaterial.getSslContext().getServerSocketFactory(),</span>
+<span class="fc" id="L105">                getSslParameters()</span>
+        );
+    }
+
+    public Optional&lt;X509ExtendedKeyManager&gt; getKeyManager() {
+<span class="fc" id="L110">        return Optional.ofNullable(sslMaterial.getIdentityMaterial().getKeyManager());</span>
+    }
+
+    public Optional&lt;KeyManagerFactory&gt; getKeyManagerFactory() {
+<span class="fc" id="L114">        return getKeyManager().map(KeyManagerUtils::createKeyManagerFactory);</span>
+    }
+
+    public Optional&lt;X509ExtendedTrustManager&gt; getTrustManager() {
+<span class="fc" id="L118">        return Optional.ofNullable(sslMaterial.getTrustMaterial().getTrustManager());</span>
+    }
+
+    public Optional&lt;TrustManagerFactory&gt; getTrustManagerFactory() {
+<span class="fc" id="L122">        return getTrustManager().map(TrustManagerUtils::createTrustManagerFactory);</span>
+    }
+
+    public List&lt;X509Certificate&gt; getTrustedCertificates() {
+<span class="fc" id="L126">        return getTrustManager()</span>
+<span class="fc" id="L127">                .map(X509ExtendedTrustManager::getAcceptedIssuers)</span>
+<span class="fc" id="L128">                .flatMap(x509Certificates -&gt; Optional.of(Arrays.asList(x509Certificates)))</span>
+<span class="fc" id="L129">                .map(Collections::unmodifiableList)</span>
+<span class="fc" id="L130">                .orElse(Collections.emptyList());</span>
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+<span class="fc" id="L134">        return sslMaterial.getHostnameVerifier();</span>
+    }
+
+    public List&lt;String&gt; getCiphers() {
+<span class="fc" id="L138">        return sslMaterial.getCiphers();</span>
+    }
+
+    public List&lt;String&gt; getProtocols() {
+<span class="fc" id="L142">        return sslMaterial.getProtocols();</span>
+    }
+
+    public SSLParameters getSslParameters() {
+<span class="fc" id="L146">        return SSLParametersUtils.copy(sslMaterial.getSslParameters());</span>
+    }
+
+    public SSLEngine getSSLEngine() {
+<span class="fc" id="L150">        return getSSLEngine(null, null);</span>
+    }
+
+    public SSLEngine getSSLEngine(String peerHost, Integer peerPort) {
+        SSLEngine sslEngine;
+<span class="fc bfc" id="L155" title="All 4 branches covered.">        if (nonNull(peerHost) &amp;&amp; nonNull(peerPort)) {</span>
+<span class="fc" id="L156">            sslEngine = sslMaterial.getSslContext().createSSLEngine(peerHost, peerPort);</span>
+        } else {
+<span class="fc" id="L158">            sslEngine = sslMaterial.getSslContext().createSSLEngine();</span>
+        }
+
+<span class="fc" id="L161">        sslEngine.setSSLParameters(getSslParameters());</span>
+<span class="fc" id="L162">        return sslEngine;</span>
+    }
+
+    public static Builder builder() {
+<span class="fc" id="L166">        return new Builder();</span>
+    }
+
+    public static class Builder {
+
+        private static final String TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE = &quot;TrustStore details are empty, which are required to be present when SSL/TLS is enabled&quot;;
+        private static final String IDENTITY_VALIDATION_EXCEPTION_MESSAGE = &quot;Identity details are empty, which are required to be present when SSL/TLS is enabled&quot;;
+        private static final String IDENTITY_AND_TRUST_MATERIAL_VALIDATION_EXCEPTION_MESSAGE = &quot;Could not create instance of SSLFactory because Identity &quot; +
+                &quot;and Trust material are not present. Please provide at least a Trust material.&quot;;
+
+<span class="fc" id="L176">        private static final char[] EMPTY_PASSWORD = {};</span>
+
+<span class="fc" id="L178">        private String sslContextAlgorithm = &quot;TLS&quot;;</span>
+<span class="fc" id="L179">        private Provider securityProvider = null;</span>
+<span class="fc" id="L180">        private String securityProviderName = null;</span>
+<span class="fc" id="L181">        private SecureRandom secureRandom = null;</span>
+<span class="fc" id="L182">        private HostnameVerifier hostnameVerifier = (host, sslSession) -&gt; host.equalsIgnoreCase(sslSession.getPeerHost());</span>
+
+<span class="fc" id="L184">        private final List&lt;KeyStoreHolder&gt; identities = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L185">        private final List&lt;KeyStoreHolder&gt; trustStores = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L186">        private final List&lt;X509ExtendedKeyManager&gt; identityManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L187">        private final List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L188">        private final SSLParameters sslParameters = new SSLParameters();</span>
+<span class="fc" id="L189">        private final Map&lt;String, List&lt;URI&gt;&gt; preferredClientAliasToHost = new HashMap&lt;&gt;();</span>
+
+<span class="fc" id="L191">        private boolean passwordCachingEnabled = false;</span>
+<span class="fc" id="L192">        private boolean swappableKeyManagerEnabled = false;</span>
+<span class="fc" id="L193">        private boolean swappableTrustManagerEnabled = false;</span>
+
+<span class="fc" id="L195">        private Builder() {}</span>
+
+        public Builder withSystemTrustMaterial() {
+<span class="fc" id="L198">            TrustManagerUtils.createTrustManagerWithSystemTrustedCertificates().ifPresent(trustManagers::add);</span>
+<span class="fc" id="L199">            return this;</span>
+        }
+
+        public Builder withDefaultTrustMaterial() {
+<span class="fc" id="L203">            trustManagers.add(TrustManagerUtils.createTrustManagerWithJdkTrustedCertificates());</span>
+<span class="fc" id="L204">            return this;</span>
+        }
+
+        /**
+         * Enables the possibility to swap the underlying TrustManager at runtime.
+         * After this option has been enabled the TrustManager can be swapped
+         * with {@link TrustManagerUtils#swapTrustManager(X509TrustManager, X509TrustManager) TrustManagerUtils#swapTrustManager(swappableTrustManager, newTrustManager)}
+         */
+        public Builder withSwappableTrustMaterial() {
+<span class="fc" id="L213">            swappableTrustManagerEnabled = true;</span>
+<span class="fc" id="L214">            return this;</span>
+        }
+
+        public &lt;T extends X509TrustManager&gt; Builder withTrustMaterial(T trustManager) {
+<span class="fc" id="L218">            trustManagers.add(TrustManagerUtils.wrapIfNeeded(trustManager));</span>
+<span class="fc" id="L219">            return this;</span>
+        }
+
+        public &lt;T extends TrustManagerFactory&gt; Builder withTrustMaterial(T trustManagerFactory) {
+<span class="fc" id="L223">            X509ExtendedTrustManager trustManager = TrustManagerUtils.getTrustManager(trustManagerFactory);</span>
+<span class="fc" id="L224">            this.trustManagers.add(trustManager);</span>
+<span class="fc" id="L225">            return this;</span>
+        }
+
+        public Builder withTrustMaterial(String trustStorePath, char[] trustStorePassword) {
+<span class="fc" id="L229">            return withTrustMaterial(trustStorePath, trustStorePassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withTrustMaterial(String trustStorePath, char[] trustStorePassword, String trustStoreType) {
+<span class="fc bfc" id="L233" title="All 2 branches covered.">            if (StringUtils.isBlank(trustStorePath)) {</span>
+<span class="fc" id="L234">                throw new GenericKeyStoreException(TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
+            }
+
+<span class="fc" id="L237">            KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);</span>
+<span class="fc" id="L238">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L239">            trustStores.add(trustStoreHolder);</span>
+
+<span class="fc" id="L241">            return this;</span>
+        }
+
+        public Builder withTrustMaterial(Path trustStorePath, char[] trustStorePassword) {
+<span class="fc" id="L245">            return withTrustMaterial(trustStorePath, trustStorePassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withTrustMaterial(Path trustStorePath, char[] trustStorePassword, String trustStoreType) {
+<span class="fc bfc" id="L249" title="All 4 branches covered.">            if (isNull(trustStorePath) || StringUtils.isBlank(trustStoreType)) {</span>
+<span class="fc" id="L250">                throw new GenericKeyStoreException(TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
+            }
+
+<span class="fc" id="L253">            KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);</span>
+<span class="fc" id="L254">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L255">            trustStores.add(trustStoreHolder);</span>
+
+<span class="fc" id="L257">            return this;</span>
+        }
+
+        public Builder withTrustMaterial(InputStream trustStoreStream, char[] trustStorePassword) {
+<span class="fc" id="L261">            return withTrustMaterial(trustStoreStream, trustStorePassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withTrustMaterial(InputStream trustStoreStream, char[] trustStorePassword, String trustStoreType) {
+<span class="fc" id="L265">            KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStoreStream, trustStorePassword, trustStoreType);</span>
+<span class="fc" id="L266">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L267">            trustStores.add(trustStoreHolder);</span>
+<span class="fc" id="L268">            return this;</span>
+        }
+
+        public Builder withTrustMaterial(KeyStore trustStore) {
+<span class="fc" id="L272">            withTrustMaterial(trustStore, EMPTY_PASSWORD);</span>
+<span class="fc" id="L273">            return this;</span>
+        }
+
+        public Builder withTrustMaterial(KeyStore trustStore, char[] trustStorePassword) {
+<span class="fc" id="L277">            validateKeyStore(trustStore, TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L278">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, trustStorePassword);</span>
+<span class="fc" id="L279">            trustStores.add(trustStoreHolder);</span>
+
+<span class="fc" id="L281">            return this;</span>
+        }
+
+        @SafeVarargs
+        public final &lt;T extends Certificate&gt; Builder withTrustMaterial(T... certificates) {
+<span class="fc" id="L286">            return withTrustMaterial(Arrays.asList(certificates));</span>
+        }
+
+        public &lt;T extends Certificate&gt; Builder withTrustMaterial(List&lt;T&gt; certificates) {
+<span class="fc" id="L290">            KeyStore trustStore = KeyStoreUtils.createTrustStore(certificates);</span>
+<span class="fc" id="L291">            KeyStoreHolder trustStoreHolder = new KeyStoreHolder(trustStore, KeyStoreUtils.DUMMY_PASSWORD.toCharArray());</span>
+<span class="fc" id="L292">            trustStores.add(trustStoreHolder);</span>
+<span class="fc" id="L293">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword) {
+<span class="fc" id="L297">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L301">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityPassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword, String identityStoreType) {
+<span class="fc" id="L305">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, identityStoreType);</span>
+        }
+
+        public Builder withIdentityMaterial(String identityStorePath, char[] identityStorePassword, char[] identityPassword, String identityStoreType) {
+<span class="fc bfc" id="L309" title="All 4 branches covered.">            if (StringUtils.isBlank(identityStorePath) || StringUtils.isBlank(identityStoreType)) {</span>
+<span class="fc" id="L310">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+            }
+
+<span class="fc" id="L313">            KeyStore identity = KeyStoreUtils.loadKeyStore(identityStorePath, identityStorePassword, identityStoreType);</span>
+<span class="fc" id="L314">            KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L315">            identities.add(identityHolder);</span>
+<span class="fc" id="L316">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword) {
+<span class="fc" id="L320">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L324">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityPassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword, String identityStoreType) {
+<span class="fc" id="L328">            return withIdentityMaterial(identityStorePath, identityStorePassword, identityStorePassword, identityStoreType);</span>
+        }
+
+        public Builder withIdentityMaterial(Path identityStorePath, char[] identityStorePassword, char[] identityPassword, String identityStoreType) {
+<span class="fc bfc" id="L332" title="All 4 branches covered.">            if (isNull(identityStorePath) || StringUtils.isBlank(identityStoreType)) {</span>
+<span class="fc" id="L333">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+            }
+
+<span class="fc" id="L336">            KeyStore identity = KeyStoreUtils.loadKeyStore(identityStorePath, identityStorePassword, identityStoreType);</span>
+<span class="fc" id="L337">            KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L338">            identities.add(identityHolder);</span>
+<span class="fc" id="L339">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(InputStream identityStream, char[] identityStorePassword) {
+<span class="fc" id="L343">            return withIdentityMaterial(identityStream, identityStorePassword, identityStorePassword);</span>
+        }
+
+        public Builder withIdentityMaterial(InputStream identityStream, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L347">            return withIdentityMaterial(identityStream, identityStorePassword, identityPassword, KeyStore.getDefaultType());</span>
+        }
+
+        public Builder withIdentityMaterial(InputStream identityStream, char[] identityStorePassword, String identityStoreType) {
+<span class="fc" id="L351">            return withIdentityMaterial(identityStream, identityStorePassword, identityStorePassword, identityStoreType);</span>
+        }
+
+        public Builder withIdentityMaterial(InputStream identityStream, char[] identityStorePassword, char[] identityPassword, String identityStoreType) {
+<span class="fc bfc" id="L355" title="All 4 branches covered.">            if (isNull(identityStream) || StringUtils.isBlank(identityStoreType)) {</span>
+<span class="fc" id="L356">                throw new GenericKeyStoreException(IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+            }
+
+<span class="fc" id="L359">            KeyStore identity = KeyStoreUtils.loadKeyStore(identityStream, identityStorePassword, identityStoreType);</span>
+<span class="fc" id="L360">            KeyStoreHolder identityHolder = new KeyStoreHolder(identity, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L361">            identities.add(identityHolder);</span>
+<span class="fc" id="L362">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(KeyStore identityStore, char[] identityStorePassword) {
+<span class="fc" id="L366">            return withIdentityMaterial(identityStore, identityStorePassword, identityStorePassword);</span>
+        }
+
+        public Builder withIdentityMaterial(KeyStore identityStore, char[] identityStorePassword, char[] identityPassword) {
+<span class="fc" id="L370">            validateKeyStore(identityStore, IDENTITY_VALIDATION_EXCEPTION_MESSAGE);</span>
+<span class="fc" id="L371">            KeyStoreHolder identityHolder = new KeyStoreHolder(identityStore, identityStorePassword, identityPassword);</span>
+<span class="fc" id="L372">            identities.add(identityHolder);</span>
+<span class="fc" id="L373">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(Key privateKey, char[] privateKeyPassword, Certificate... certificateChain) {
+<span class="fc" id="L377">            return withIdentityMaterial(privateKey, privateKeyPassword, null, certificateChain);</span>
+        }
+
+        public Builder withIdentityMaterial(Key privateKey, char[] privateKeyPassword, String alias, Certificate... certificateChain) {
+<span class="fc" id="L381">            KeyStore identityStore = KeyStoreUtils.createIdentityStore(privateKey, privateKeyPassword, alias, certificateChain);</span>
+<span class="fc" id="L382">            identities.add(new KeyStoreHolder(identityStore, KeyStoreUtils.DUMMY_PASSWORD.toCharArray(), privateKeyPassword));</span>
+<span class="fc" id="L383">            return this;</span>
+        }
+
+        public &lt;T extends X509KeyManager&gt; Builder withIdentityMaterial(T keyManager) {
+<span class="fc" id="L387">            identityManagers.add(KeyManagerUtils.wrapIfNeeded(keyManager));</span>
+<span class="fc" id="L388">            return this;</span>
+        }
+
+        public &lt;T extends KeyManagerFactory&gt; Builder withIdentityMaterial(T keyManagerFactory) {
+<span class="fc" id="L392">            X509ExtendedKeyManager keyManager = KeyManagerUtils.getKeyManager(keyManagerFactory);</span>
+<span class="fc" id="L393">            this.identityManagers.add(keyManager);</span>
+<span class="fc" id="L394">            return this;</span>
+        }
+
+        /**
+         * Enables the possibility to swap the underlying KeyManager at runtime.
+         * After this option has been enabled the KeyManager can be swapped
+         * with {@link KeyManagerUtils#swapKeyManager(X509KeyManager, X509KeyManager) KeyManagerUtils#swapKeyManager(swappableKeyManager, newKeyManager)}
+         */
+        public Builder withSwappableIdentityMaterial() {
+<span class="fc" id="L403">            swappableKeyManagerEnabled = true;</span>
+<span class="fc" id="L404">            return this;</span>
+        }
+
+        private void validateKeyStore(KeyStore keyStore, String exceptionMessage) {
+<span class="fc bfc" id="L408" title="All 2 branches covered.">            if (isNull(keyStore)) {</span>
+<span class="fc" id="L409">                throw new GenericKeyStoreException(exceptionMessage);</span>
+            }
+<span class="fc" id="L411">        }</span>
+
+        public Builder withClientIdentityRoute(String clientAlias, String... hosts) {
+<span class="fc" id="L414">            return withClientIdentityRoute(</span>
+                    clientAlias,
+<span class="fc" id="L416">                    Arrays.stream(hosts)</span>
+<span class="fc" id="L417">                            .map(URI::create)</span>
+<span class="fc" id="L418">                            .collect(Collectors.toList())</span>
+            );
+        }
+
+        public Builder withClientIdentityRoute(Map&lt;String, List&lt;String&gt;&gt; clientAliasesToHosts) {
+<span class="fc" id="L423">            clientAliasesToHosts.entrySet().stream()</span>
+<span class="fc" id="L424">                    .map(clientAliasToHosts -&gt; new AbstractMap.SimpleEntry&lt;&gt;(</span>
+<span class="fc" id="L425">                            clientAliasToHosts.getKey(),</span>
+<span class="fc" id="L426">                            clientAliasToHosts.getValue().stream()</span>
+<span class="fc" id="L427">                                    .map(URI::create)</span>
+<span class="fc" id="L428">                                    .collect(Collectors.toList())))</span>
+<span class="fc" id="L429">                    .forEach(clientAliasToHosts -&gt; withClientIdentityRoute(clientAliasToHosts.getKey(), clientAliasToHosts.getValue()));</span>
+<span class="fc" id="L430">            return this;</span>
+        }
+
+        private Builder withClientIdentityRoute(String clientAlias, List&lt;URI&gt; hosts) {
+<span class="fc bfc" id="L434" title="All 2 branches covered.">            if (StringUtils.isBlank(clientAlias)) {</span>
+<span class="fc" id="L435">                throw new IllegalArgumentException(&quot;clientAlias should be present&quot;);</span>
+            }
+
+<span class="fc bfc" id="L438" title="All 2 branches covered.">            if (hosts.isEmpty()) {</span>
+<span class="fc" id="L439">                throw new IllegalArgumentException(String.format(&quot;At least one host should be present. No host(s) found for the given alias: [%s]&quot;, clientAlias));</span>
+            }
+
+<span class="fc bfc" id="L442" title="All 2 branches covered.">            for (URI host : hosts) {</span>
+<span class="fc" id="L443">                UriUtils.validate(host);</span>
+
+<span class="fc bfc" id="L445" title="All 2 branches covered.">                if (preferredClientAliasToHost.containsKey(clientAlias)) {</span>
+<span class="fc" id="L446">                    preferredClientAliasToHost.get(clientAlias).add(host);</span>
+                } else {
+<span class="fc" id="L448">                    preferredClientAliasToHost.put(clientAlias, new ArrayList&lt;&gt;(Collections.singletonList(host)));</span>
+                }
+<span class="fc" id="L450">            }</span>
+<span class="fc" id="L451">            return this;</span>
+        }
+
+        public &lt;T extends HostnameVerifier&gt; Builder withHostnameVerifier(T hostnameVerifier) {
+<span class="fc" id="L455">            this.hostnameVerifier = hostnameVerifier;</span>
+<span class="fc" id="L456">            return this;</span>
+        }
+
+        public Builder withCiphers(String... ciphers) {
+<span class="fc" id="L460">            sslParameters.setCipherSuites(ciphers);</span>
+<span class="fc" id="L461">            return this;</span>
+        }
+
+        public Builder withProtocols(String... protocols) {
+<span class="fc" id="L465">            sslParameters.setProtocols(protocols);</span>
+<span class="fc" id="L466">            return this;</span>
+        }
+
+        public Builder withNeedClientAuthentication() {
+<span class="fc" id="L470">            return withNeedClientAuthentication(true);</span>
+        }
+
+        public Builder withNeedClientAuthentication(boolean needClientAuthentication) {
+<span class="fc" id="L474">            sslParameters.setNeedClientAuth(needClientAuthentication);</span>
+<span class="fc" id="L475">            return this;</span>
+        }
+
+        public Builder withWantClientAuthentication() {
+<span class="fc" id="L479">            return withWantClientAuthentication(true);</span>
+        }
+
+        public Builder withWantClientAuthentication(boolean wantClientAuthentication) {
+<span class="fc" id="L483">            sslParameters.setWantClientAuth(wantClientAuthentication);</span>
+<span class="fc" id="L484">            return this;</span>
+        }
+
+        public Builder withSslContextAlgorithm(String sslContextAlgorithm) {
+<span class="fc" id="L488">            this.sslContextAlgorithm = sslContextAlgorithm;</span>
+<span class="fc" id="L489">            return this;</span>
+        }
+
+        public &lt;T extends Provider&gt; Builder withSecurityProvider(T securityProvider) {
+<span class="fc" id="L493">            this.securityProvider = securityProvider;</span>
+<span class="fc" id="L494">            return this;</span>
+        }
+
+        public Builder withSecurityProvider(String securityProviderName) {
+<span class="fc" id="L498">            this.securityProviderName = securityProviderName;</span>
+<span class="fc" id="L499">            return this;</span>
+        }
+
+        public &lt;T extends SecureRandom&gt; Builder withSecureRandom(T secureRandom) {
+<span class="fc" id="L503">            this.secureRandom = secureRandom;</span>
+<span class="fc" id="L504">            return this;</span>
+        }
+
+        public Builder withTrustingAllCertificatesWithoutValidation() {
+<span class="fc" id="L508">            LOGGER.warn(&quot;UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation. Please don't use this configuration at production.&quot;);</span>
+<span class="fc" id="L509">            trustManagers.add(TrustManagerUtils.createUnsafeTrustManager());</span>
+<span class="fc" id="L510">            return this;</span>
+        }
+
+        public Builder withPasswordCaching() {
+<span class="fc" id="L514">            passwordCachingEnabled = true;</span>
+<span class="fc" id="L515">            return this;</span>
+        }
+
+        public SSLFactory build() {
+<span class="fc bfc" id="L519" title="All 4 branches covered.">            if (!isIdentityMaterialPresent() &amp;&amp; !isTrustMaterialPresent()) {</span>
+<span class="fc" id="L520">                throw new GenericSecurityException(IDENTITY_AND_TRUST_MATERIAL_VALIDATION_EXCEPTION_MESSAGE);</span>
+            }
+
+<span class="fc bfc" id="L523" title="All 2 branches covered.">            X509ExtendedKeyManager keyManager = isIdentityMaterialPresent() ? createKeyManager() : null;</span>
+<span class="fc bfc" id="L524" title="All 2 branches covered.">            X509ExtendedTrustManager trustManager = isTrustMaterialPresent() ? createTrustManagers() : null;</span>
+<span class="fc" id="L525">            SSLContext sslContext = SSLContextUtils.createSslContext(</span>
+                    keyManager,
+                    trustManager,
+                    secureRandom,
+                    sslContextAlgorithm,
+                    securityProviderName,
+                    securityProvider
+            );
+
+<span class="fc" id="L534">            SSLParameters baseSslParameters = SSLParametersUtils.merge(sslParameters, sslContext.getDefaultSSLParameters());</span>
+
+<span class="fc bfc" id="L536" title="All 4 branches covered.">            if (!passwordCachingEnabled &amp;&amp; !identities.isEmpty()) {</span>
+<span class="fc" id="L537">                KeyStoreUtils.sanitizeKeyStores(identities);</span>
+            }
+
+<span class="fc bfc" id="L540" title="All 4 branches covered.">            if (!passwordCachingEnabled &amp;&amp; !trustStores.isEmpty()) {</span>
+<span class="fc" id="L541">                KeyStoreUtils.sanitizeKeyStores(trustStores);</span>
+            }
+
+<span class="fc" id="L544">            IdentityMaterial identityMaterial = new IdentityMaterial.Builder()</span>
+<span class="fc" id="L545">                    .withKeyManager(keyManager)</span>
+<span class="fc" id="L546">                    .withIdentities(Collections.unmodifiableList(identities))</span>
+<span class="fc" id="L547">                    .build();</span>
+
+<span class="fc" id="L549">            TrustMaterial trustMaterial = new TrustMaterial.Builder()</span>
+<span class="fc" id="L550">                    .withTrustManager(trustManager)</span>
+<span class="fc" id="L551">                    .withTrustStores(Collections.unmodifiableList(trustStores))</span>
+<span class="fc" id="L552">                    .build();</span>
+
+<span class="fc" id="L554">            SSLMaterial sslMaterial = new SSLMaterial.Builder()</span>
+<span class="fc" id="L555">                    .withSslContext(sslContext)</span>
+<span class="fc" id="L556">                    .withIdentityMaterial(identityMaterial)</span>
+<span class="fc" id="L557">                    .withTrustMaterial(trustMaterial)</span>
+<span class="fc" id="L558">                    .withSslParameters(baseSslParameters)</span>
+<span class="fc" id="L559">                    .withHostnameVerifier(hostnameVerifier)</span>
+<span class="fc" id="L560">                    .withCiphers(Collections.unmodifiableList(Arrays.asList(baseSslParameters.getCipherSuites())))</span>
+<span class="fc" id="L561">                    .withProtocols(Collections.unmodifiableList(Arrays.asList(baseSslParameters.getProtocols())))</span>
+<span class="fc" id="L562">                    .build();</span>
+
+<span class="fc" id="L564">            return new SSLFactory(sslMaterial);</span>
+        }
+
+        private boolean isTrustMaterialPresent() {
+<span class="fc bfc" id="L568" title="All 2 branches covered.">            return !trustStores.isEmpty()</span>
+<span class="fc bfc" id="L569" title="All 2 branches covered.">                    || !trustManagers.isEmpty();</span>
+        }
+
+        private boolean isIdentityMaterialPresent() {
+<span class="fc bfc" id="L573" title="All 2 branches covered.">            return !identities.isEmpty()</span>
+<span class="fc bfc" id="L574" title="All 2 branches covered.">                    || !identityManagers.isEmpty();</span>
+        }
+
+        private X509ExtendedKeyManager createKeyManager() {
+<span class="fc" id="L578">            return KeyManagerUtils.keyManagerBuilder()</span>
+<span class="fc" id="L579">                    .withKeyManagers(identityManagers)</span>
+<span class="fc" id="L580">                    .withIdentities(identities)</span>
+<span class="fc" id="L581">                    .withSwappableKeyManager(swappableKeyManagerEnabled)</span>
+<span class="fc" id="L582">                    .withClientAliasToHost(preferredClientAliasToHost)</span>
+<span class="fc" id="L583">                    .build();</span>
+        }
+
+        private X509ExtendedTrustManager createTrustManagers() {
+<span class="fc" id="L587">            return TrustManagerUtils.trustManagerBuilder()</span>
+<span class="fc" id="L588">                    .withTrustManagers(trustManagers)</span>
+<span class="fc" id="L589">                    .withTrustStores(trustStores.stream()</span>
+<span class="fc" id="L590">                            .map(KeyStoreHolder::getKeyStore)</span>
+<span class="fc" id="L591">                            .collect(Collectors.toList()))</span>
+<span class="fc" id="L592">                    .withSwappableTrustManager(swappableTrustManagerEnabled)</span>
+<span class="fc" id="L593">                    .build();</span>
+        }
+
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLMaterial.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.model</a> &gt; <span class="el_source">SSLMaterial.java</span></div><h1>SSLMaterial.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.model;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import java.util.List;
+
+/**
+ * &lt;p&gt;
+ * &lt;strong&gt;NOTE:&lt;/strong&gt;
+ * Please don't use this class directly as it is part of the internal API. Class name and methods can be changed any time.
+ * &lt;/p&gt;
+ *
+ * @author Hakan Altindag
+ */
+public final class SSLMaterial {
+
+    private SSLContext sslContext;
+    private IdentityMaterial identityMaterial;
+    private TrustMaterial trustMaterial;
+    private HostnameVerifier hostnameVerifier;
+    private SSLParameters sslParameters;
+    private List&lt;String&gt; ciphers;
+    private List&lt;String&gt; protocols;
+
+    private SSLMaterial() {}
+
+    public SSLContext getSslContext() {
+<span class="fc" id="L45">        return sslContext;</span>
+    }
+
+    public IdentityMaterial getIdentityMaterial() {
+<span class="fc" id="L49">        return identityMaterial;</span>
+    }
+
+    public TrustMaterial getTrustMaterial() {
+<span class="fc" id="L53">        return trustMaterial;</span>
+    }
+
+    public SSLParameters getSslParameters() {
+<span class="fc" id="L57">        return sslParameters;</span>
+    }
+
+    public HostnameVerifier getHostnameVerifier() {
+<span class="fc" id="L61">        return hostnameVerifier;</span>
+    }
+
+    public List&lt;String&gt; getCiphers() {
+<span class="fc" id="L65">        return ciphers;</span>
+    }
+
+    public List&lt;String&gt; getProtocols() {
+<span class="fc" id="L69">        return protocols;</span>
+    }
+
+<span class="fc" id="L72">    public static class Builder {</span>
+
+        private SSLContext sslContext;
+        private IdentityMaterial identityMaterial;
+        private TrustMaterial trustMaterial;
+        private HostnameVerifier hostnameVerifier;
+        private SSLParameters sslParameters;
+        private List&lt;String&gt; ciphers;
+        private List&lt;String&gt; protocols;
+
+        public Builder withSslContext(SSLContext sslContext) {
+<span class="fc" id="L83">            this.sslContext = sslContext;</span>
+<span class="fc" id="L84">            return this;</span>
+        }
+
+        public Builder withHostnameVerifier(HostnameVerifier hostnameVerifier) {
+<span class="fc" id="L88">            this.hostnameVerifier = hostnameVerifier;</span>
+<span class="fc" id="L89">            return this;</span>
+        }
+
+        public Builder withSslParameters(SSLParameters sslParameters) {
+<span class="fc" id="L93">            this.sslParameters = sslParameters;</span>
+<span class="fc" id="L94">            return this;</span>
+        }
+
+        public Builder withCiphers(List&lt;String&gt; ciphers) {
+<span class="fc" id="L98">            this.ciphers = ciphers;</span>
+<span class="fc" id="L99">            return this;</span>
+        }
+
+        public Builder withProtocols(List&lt;String&gt; protocols) {
+<span class="fc" id="L103">            this.protocols = protocols;</span>
+<span class="fc" id="L104">            return this;</span>
+        }
+
+        public Builder withIdentityMaterial(IdentityMaterial identityMaterial) {
+<span class="fc" id="L108">            this.identityMaterial = identityMaterial;</span>
+<span class="fc" id="L109">            return this;</span>
+        }
+
+        public Builder withTrustMaterial(TrustMaterial trustMaterial) {
+<span class="fc" id="L113">            this.trustMaterial = trustMaterial;</span>
+<span class="fc" id="L114">            return this;</span>
+        }
+
+        public SSLMaterial build() {
+<span class="fc" id="L118">            SSLMaterial sslMaterial = new SSLMaterial();</span>
+<span class="fc" id="L119">            sslMaterial.sslContext = sslContext;</span>
+<span class="fc" id="L120">            sslMaterial.identityMaterial = identityMaterial;</span>
+<span class="fc" id="L121">            sslMaterial.trustMaterial = trustMaterial;</span>
+<span class="fc" id="L122">            sslMaterial.hostnameVerifier = hostnameVerifier;</span>
+<span class="fc" id="L123">            sslMaterial.sslParameters = sslParameters;</span>
+<span class="fc" id="L124">            sslMaterial.ciphers = ciphers;</span>
+<span class="fc" id="L125">            sslMaterial.protocols = protocols;</span>
+<span class="fc" id="L126">            return sslMaterial;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

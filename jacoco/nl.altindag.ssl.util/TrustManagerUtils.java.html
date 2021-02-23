@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TrustManagerUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.util</a> &gt; <span class="el_source">TrustManagerUtils.java</span></div><h1>TrustManagerUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.util;
+
+import nl.altindag.ssl.exception.GenericTrustManagerException;
+import nl.altindag.ssl.model.KeyStoreHolder;
+import nl.altindag.ssl.trustmanager.CompositeX509ExtendedTrustManager;
+import nl.altindag.ssl.trustmanager.HotSwappableX509ExtendedTrustManager;
+import nl.altindag.ssl.trustmanager.TrustManagerFactoryWrapper;
+import nl.altindag.ssl.trustmanager.UnsafeX509ExtendedTrustManager;
+import nl.altindag.ssl.trustmanager.X509TrustManagerWrapper;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+/**
+ * @author Hakan Altindag
+ */
+public final class TrustManagerUtils {
+
+    private TrustManagerUtils() {}
+
+    public static X509ExtendedTrustManager combine(X509TrustManager... trustManagers) {
+<span class="fc" id="L53">        return combine(Arrays.asList(trustManagers));</span>
+    }
+
+    public static X509ExtendedTrustManager combine(List&lt;? extends X509TrustManager&gt; trustManagers) {
+<span class="fc" id="L57">        return TrustManagerUtils.trustManagerBuilder()</span>
+<span class="fc" id="L58">                .withTrustManagers(trustManagers)</span>
+<span class="fc" id="L59">                .build();</span>
+    }
+
+    public static &lt;T extends X509TrustManager&gt; X509ExtendedTrustManager[] toArray(T trustManager) {
+<span class="fc" id="L63">        return new X509ExtendedTrustManager[]{TrustManagerUtils.wrapIfNeeded(trustManager)};</span>
+    }
+
+    public static X509ExtendedTrustManager createTrustManagerWithJdkTrustedCertificates() {
+<span class="fc" id="L67">        return createTrustManager((KeyStore) null);</span>
+    }
+
+    public static Optional&lt;X509ExtendedTrustManager&gt; createTrustManagerWithSystemTrustedCertificates() {
+<span class="fc" id="L71">        List&lt;KeyStore&gt; trustStores = KeyStoreUtils.loadSystemKeyStores();</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (trustStores.isEmpty()) {</span>
+<span class="fc" id="L73">            return Optional.empty();</span>
+        }
+
+<span class="fc" id="L76">        X509ExtendedTrustManager trustManager = createTrustManager(trustStores.toArray(new KeyStore[]{}));</span>
+<span class="fc" id="L77">        return Optional.of(trustManager);</span>
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStoreHolder... trustStoreHolders) {
+<span class="fc" id="L81">        return Arrays.stream(trustStoreHolders)</span>
+<span class="fc" id="L82">                .map(KeyStoreHolder::getKeyStore)</span>
+<span class="fc" id="L83">                .map(TrustManagerUtils::createTrustManager)</span>
+<span class="fc" id="L84">                .collect(collectingAndThen(toList(), TrustManagerUtils::combine));</span>
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore... trustStores) {
+<span class="fc" id="L88">        return Arrays.stream(trustStores)</span>
+<span class="fc" id="L89">                .map(TrustManagerUtils::createTrustManager)</span>
+<span class="fc" id="L90">                .collect(collectingAndThen(toList(), TrustManagerUtils::combine));</span>
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore) {
+<span class="fc" id="L94">        return createTrustManager(trustStore, TrustManagerFactory.getDefaultAlgorithm());</span>
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, String trustManagerFactoryAlgorithm) {
+        try {
+<span class="fc" id="L99">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm);</span>
+<span class="fc" id="L100">            return createTrustManager(trustStore, trustManagerFactory);</span>
+<span class="fc" id="L101">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="fc" id="L102">            throw new GenericTrustManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, String trustManagerFactoryAlgorithm, String securityProviderName) {
+        try {
+<span class="fc" id="L108">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm, securityProviderName);</span>
+<span class="fc" id="L109">            return createTrustManager(trustStore, trustManagerFactory);</span>
+<span class="fc" id="L110">        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {</span>
+<span class="fc" id="L111">            throw new GenericTrustManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, String trustManagerFactoryAlgorithm, Provider securityProvider) {
+        try {
+<span class="fc" id="L117">            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(trustManagerFactoryAlgorithm, securityProvider);</span>
+<span class="fc" id="L118">            return createTrustManager(trustStore, trustManagerFactory);</span>
+<span class="fc" id="L119">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="fc" id="L120">            throw new GenericTrustManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedTrustManager createTrustManager(KeyStore trustStore, TrustManagerFactory trustManagerFactory) {
+        try {
+<span class="fc" id="L126">            trustManagerFactory.init(trustStore);</span>
+<span class="fc" id="L127">            return TrustManagerUtils.getTrustManager(trustManagerFactory);</span>
+<span class="fc" id="L128">        } catch (KeyStoreException e) {</span>
+<span class="fc" id="L129">            throw new GenericTrustManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedTrustManager createUnsafeTrustManager() {
+<span class="fc" id="L134">        return UnsafeX509ExtendedTrustManager.getInstance();</span>
+    }
+
+    public static X509ExtendedTrustManager wrapIfNeeded(X509TrustManager trustManager) {
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        if (trustManager instanceof X509ExtendedTrustManager) {</span>
+<span class="fc" id="L139">            return (X509ExtendedTrustManager) trustManager;</span>
+        } else {
+<span class="fc" id="L141">            return new X509TrustManagerWrapper(trustManager);</span>
+        }
+    }
+
+    public static TrustManagerFactory createTrustManagerFactory(TrustManager trustManager) {
+<span class="fc" id="L146">        return new TrustManagerFactoryWrapper(trustManager);</span>
+    }
+
+    public static &lt;T extends TrustManagerFactory&gt; X509ExtendedTrustManager getTrustManager(T trustManagerFactory) {
+<span class="fc" id="L150">        return Arrays.stream(trustManagerFactory.getTrustManagers())</span>
+<span class="fc" id="L151">                .filter(X509TrustManager.class::isInstance)</span>
+<span class="fc" id="L152">                .map(X509TrustManager.class::cast)</span>
+<span class="fc" id="L153">                .map(TrustManagerUtils::wrapIfNeeded)</span>
+<span class="fc" id="L154">                .collect(collectingAndThen(toList(), TrustManagerUtils::combine));</span>
+    }
+
+    /**
+     * Wraps the given TrustManager into an instance of a Hot Swappable TrustManager.
+     * This type of TrustManager has the capability of swapping in and out different TrustManagers at runtime.
+     */
+    public static X509ExtendedTrustManager createSwappableTrustManager(X509TrustManager trustManager) {
+<span class="fc" id="L162">        return new HotSwappableX509ExtendedTrustManager(TrustManagerUtils.wrapIfNeeded(trustManager));</span>
+    }
+
+    /**
+     * Swaps the internal TrustManager instance with the given trustManager object.
+     * The baseTrustManager should be an instance of {@link HotSwappableX509ExtendedTrustManager}
+     * and can be created with {@link TrustManagerUtils#createSwappableTrustManager(X509TrustManager)}
+     *
+     * @param baseTrustManager an instance of {@link HotSwappableX509ExtendedTrustManager}
+     * @param newTrustManager  to be injected instance of a TrustManager
+     * @throws GenericTrustManagerException if {@code baseTrustManager} is not instance of {@link HotSwappableX509ExtendedTrustManager}
+     */
+    public static void swapTrustManager(X509TrustManager baseTrustManager, X509TrustManager newTrustManager) {
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        if (newTrustManager instanceof HotSwappableX509ExtendedTrustManager) {</span>
+<span class="fc" id="L176">            throw new GenericTrustManagerException(</span>
+<span class="fc" id="L177">                    String.format(&quot;The newTrustManager should not be an instance of [%s]&quot;, HotSwappableX509ExtendedTrustManager.class.getName())</span>
+            );
+        }
+
+<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (baseTrustManager instanceof HotSwappableX509ExtendedTrustManager) {</span>
+<span class="fc" id="L182">            ((HotSwappableX509ExtendedTrustManager) baseTrustManager).setTrustManager(TrustManagerUtils.wrapIfNeeded(newTrustManager));</span>
+        } else {
+<span class="fc" id="L184">            throw new GenericTrustManagerException(</span>
+<span class="fc" id="L185">                    String.format(&quot;The baseTrustManager is from the instance of [%s] and should be an instance of [%s].&quot;,</span>
+<span class="fc" id="L186">                            baseTrustManager.getClass().getName(),</span>
+<span class="fc" id="L187">                            HotSwappableX509ExtendedTrustManager.class.getName())</span>
+            );
+        }
+<span class="fc" id="L190">    }</span>
+
+    private static List&lt;X509ExtendedTrustManager&gt; unwrapIfPossible(X509ExtendedTrustManager trustManager) {
+<span class="fc" id="L193">        List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (trustManager instanceof CompositeX509ExtendedTrustManager) {</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">            for (X509ExtendedTrustManager innerTrustManager : ((CompositeX509ExtendedTrustManager) trustManager).getTrustManagers()) {</span>
+<span class="fc" id="L196">                List&lt;X509ExtendedTrustManager&gt; unwrappedTrustManagers = TrustManagerUtils.unwrapIfPossible(innerTrustManager);</span>
+<span class="fc" id="L197">                trustManagers.addAll(unwrappedTrustManagers);</span>
+<span class="fc" id="L198">            }</span>
+        } else {
+<span class="fc" id="L200">            trustManagers.add(trustManager);</span>
+        }
+
+<span class="fc" id="L203">        return trustManagers;</span>
+    }
+
+    public static TrustManagerBuilder trustManagerBuilder() {
+<span class="fc" id="L207">        return new TrustManagerBuilder();</span>
+    }
+
+    public static final class TrustManagerBuilder {
+
+        private static final String EMPTY_TRUST_MANAGER_EXCEPTION = &quot;Input does not contain TrustManager&quot;;
+
+<span class="fc" id="L214">        private TrustManagerBuilder() {}</span>
+
+<span class="fc" id="L216">        private final List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L217">        private boolean swappableTrustManagerEnabled = false;</span>
+
+        public &lt;T extends X509TrustManager&gt; TrustManagerBuilder withTrustManagers(T... trustManagers) {
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            for (T trustManager : trustManagers) {</span>
+<span class="fc" id="L221">                withTrustManager(trustManager);</span>
+            }
+<span class="fc" id="L223">            return this;</span>
+        }
+
+        public &lt;T extends X509TrustManager&gt; TrustManagerBuilder withTrustManagers(List&lt;T&gt; trustManagers) {
+<span class="fc bfc" id="L227" title="All 2 branches covered.">            for (X509TrustManager trustManager : trustManagers) {</span>
+<span class="fc" id="L228">                withTrustManager(trustManager);</span>
+<span class="fc" id="L229">            }</span>
+<span class="fc" id="L230">            return this;</span>
+        }
+
+        public &lt;T extends X509TrustManager&gt; TrustManagerBuilder withTrustManager(T trustManager) {
+<span class="fc" id="L234">            this.trustManagers.add(TrustManagerUtils.wrapIfNeeded(trustManager));</span>
+<span class="fc" id="L235">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; TrustManagerBuilder withTrustStores(T... trustStores) {
+<span class="fc" id="L239">            return withTrustStores(Arrays.asList(trustStores));</span>
+        }
+
+        public TrustManagerBuilder withTrustStores(List&lt;? extends KeyStore&gt; trustStores) {
+<span class="fc bfc" id="L243" title="All 2 branches covered.">            for (KeyStore trustStore : trustStores) {</span>
+<span class="fc" id="L244">                this.trustManagers.add(TrustManagerUtils.createTrustManager(trustStore));</span>
+<span class="fc" id="L245">            }</span>
+<span class="fc" id="L246">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; TrustManagerBuilder withTrustStore(T trustStore) {
+<span class="fc" id="L250">            this.trustManagers.add(TrustManagerUtils.createTrustManager(trustStore));</span>
+<span class="fc" id="L251">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; TrustManagerBuilder withTrustStore(T trustStore, String trustManagerAlgorithm) {
+<span class="fc" id="L255">            this.trustManagers.add(TrustManagerUtils.createTrustManager(trustStore, trustManagerAlgorithm));</span>
+<span class="fc" id="L256">            return this;</span>
+        }
+
+        public TrustManagerBuilder withSwappableTrustManager(boolean swappableTrustManagerEnabled) {
+<span class="fc" id="L260">            this.swappableTrustManagerEnabled = swappableTrustManagerEnabled;</span>
+<span class="fc" id="L261">            return this;</span>
+        }
+
+        public X509ExtendedTrustManager build() {
+<span class="fc bfc" id="L265" title="All 2 branches covered.">            if (trustManagers.isEmpty()) {</span>
+<span class="fc" id="L266">                throw new GenericTrustManagerException(EMPTY_TRUST_MANAGER_EXCEPTION);</span>
+            }
+
+            X509ExtendedTrustManager trustManager;
+<span class="fc bfc" id="L270" title="All 2 branches covered.">            if (trustManagers.size() == 1) {</span>
+<span class="fc" id="L271">                trustManager = trustManagers.get(0);</span>
+            } else {
+<span class="fc" id="L273">                trustManager = trustManagers.stream()</span>
+<span class="fc" id="L274">                        .map(TrustManagerUtils::unwrapIfPossible)</span>
+<span class="fc" id="L275">                        .flatMap(Collection::stream)</span>
+<span class="fc" id="L276">                        .collect(collectingAndThen(toList(), CompositeX509ExtendedTrustManager::new));</span>
+            }
+
+<span class="fc bfc" id="L279" title="All 2 branches covered.">            if (swappableTrustManagerEnabled) {</span>
+<span class="fc" id="L280">                trustManager = TrustManagerUtils.createSwappableTrustManager(trustManager);</span>
+            }
+
+<span class="fc" id="L283">            return trustManager;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

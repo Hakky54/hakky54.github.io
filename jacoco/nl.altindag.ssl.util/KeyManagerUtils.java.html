@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KeyManagerUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.util</a> &gt; <span class="el_source">KeyManagerUtils.java</span></div><h1>KeyManagerUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.util;
+
+import nl.altindag.ssl.exception.GenericKeyManagerException;
+import nl.altindag.ssl.keymanager.CompositeX509ExtendedKeyManager;
+import nl.altindag.ssl.keymanager.HotSwappableX509ExtendedKeyManager;
+import nl.altindag.ssl.keymanager.KeyManagerFactoryWrapper;
+import nl.altindag.ssl.keymanager.X509KeyManagerWrapper;
+import nl.altindag.ssl.model.KeyStoreHolder;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509KeyManager;
+import java.net.URI;
+import java.security.Key;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+/**
+ * @author Hakan Altindag
+ */
+public final class KeyManagerUtils {
+
+    private KeyManagerUtils() {}
+
+    public static X509ExtendedKeyManager combine(X509KeyManager... keyManagers) {
+<span class="fc" id="L61">        return combine(Arrays.asList(keyManagers));</span>
+    }
+
+    public static X509ExtendedKeyManager combine(List&lt;? extends X509KeyManager&gt; keyManagers) {
+<span class="fc" id="L65">        return KeyManagerUtils.keyManagerBuilder()</span>
+<span class="fc" id="L66">                .withKeyManagers(keyManagers)</span>
+<span class="fc" id="L67">                .build();</span>
+    }
+
+    public static &lt;T extends X509KeyManager&gt; X509ExtendedKeyManager[] toArray(T keyManager) {
+<span class="fc" id="L71">        return new X509ExtendedKeyManager[]{KeyManagerUtils.wrapIfNeeded(keyManager)};</span>
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStoreHolder... keyStoreHolders) {
+<span class="fc" id="L75">        return Arrays.stream(keyStoreHolders)</span>
+<span class="fc" id="L76">                .map(keyStoreHolder -&gt; createKeyManager(keyStoreHolder.getKeyStore(), keyStoreHolder.getKeyPassword()))</span>
+<span class="fc" id="L77">                .collect(collectingAndThen(toList(), KeyManagerUtils::combine));</span>
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword) {
+<span class="fc" id="L81">        return createKeyManager(keyStore, keyPassword, KeyManagerFactory.getDefaultAlgorithm());</span>
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword, String keyManagerFactoryAlgorithm) {
+        try {
+<span class="fc" id="L86">            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm);</span>
+<span class="fc" id="L87">            return createKeyManager(keyStore, keyPassword, keyManagerFactory);</span>
+<span class="fc" id="L88">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="fc" id="L89">            throw new GenericKeyManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword, String keyManagerFactoryAlgorithm, String securityProviderName) {
+        try {
+<span class="fc" id="L95">            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm, securityProviderName);</span>
+<span class="fc" id="L96">            return createKeyManager(keyStore, keyPassword, keyManagerFactory);</span>
+<span class="fc" id="L97">        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {</span>
+<span class="fc" id="L98">            throw new GenericKeyManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword, String keyManagerFactoryAlgorithm, Provider securityProvider) {
+        try {
+<span class="fc" id="L104">            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(keyManagerFactoryAlgorithm, securityProvider);</span>
+<span class="fc" id="L105">            return createKeyManager(keyStore, keyPassword, keyManagerFactory);</span>
+<span class="fc" id="L106">        } catch (NoSuchAlgorithmException e) {</span>
+<span class="fc" id="L107">            throw new GenericKeyManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, char[] keyPassword, KeyManagerFactory keyManagerFactory) {
+        try {
+<span class="fc" id="L113">            keyManagerFactory.init(keyStore, keyPassword);</span>
+<span class="fc" id="L114">            return KeyManagerUtils.getKeyManager(keyManagerFactory);</span>
+<span class="fc" id="L115">        } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {</span>
+<span class="fc" id="L116">            throw new GenericKeyManagerException(e);</span>
+        }
+    }
+
+    public static X509ExtendedKeyManager createKeyManager(KeyStore keyStore, Map&lt;String, char[]&gt; aliasToPassword) {
+<span class="fc" id="L121">        List&lt;X509ExtendedKeyManager&gt; keyManagers = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (Entry&lt;String, char[]&gt; entry : aliasToPassword.entrySet()) {</span>
+            try {
+<span class="fc" id="L125">                String alias = entry.getKey();</span>
+<span class="fc" id="L126">                char[] password = entry.getValue();</span>
+
+<span class="fc bfc" id="L128" title="All 2 branches covered.">                if (keyStore.isKeyEntry(alias)) {</span>
+<span class="fc" id="L129">                    Key key = keyStore.getKey(alias, password);</span>
+<span class="fc" id="L130">                    Certificate[] certificateChain = keyStore.getCertificateChain(alias);</span>
+
+<span class="fc" id="L132">                    KeyStore identityStore = KeyStoreUtils.createIdentityStore(key, password, certificateChain);</span>
+<span class="fc" id="L133">                    X509ExtendedKeyManager keyManager = KeyManagerUtils.createKeyManager(identityStore, password);</span>
+<span class="fc" id="L134">                    keyManagers.add(keyManager);</span>
+                }
+<span class="fc" id="L136">            } catch (KeyStoreException | NoSuchAlgorithmException | UnrecoverableKeyException e) {</span>
+<span class="fc" id="L137">                throw new GenericKeyManagerException(e);</span>
+<span class="fc" id="L138">            }</span>
+<span class="fc" id="L139">        }</span>
+
+<span class="fc bfc" id="L141" title="All 2 branches covered.">        if (keyManagers.isEmpty()) {</span>
+<span class="fc" id="L142">            throw new GenericKeyManagerException(&quot;Could not create any KeyManager from the given KeyStore, Alias and Password&quot;);</span>
+        }
+
+<span class="fc" id="L145">        return KeyManagerUtils.combine(keyManagers);</span>
+    }
+
+    public static X509ExtendedKeyManager wrapIfNeeded(X509KeyManager keyManager) {
+<span class="fc bfc" id="L149" title="All 2 branches covered.">        if (keyManager instanceof X509ExtendedKeyManager) {</span>
+<span class="fc" id="L150">            return (X509ExtendedKeyManager) keyManager;</span>
+        } else {
+<span class="fc" id="L152">            return new X509KeyManagerWrapper(keyManager);</span>
+        }
+    }
+
+    public static KeyManagerFactory createKeyManagerFactory(KeyManager keyManager) {
+<span class="fc" id="L157">        return new KeyManagerFactoryWrapper(keyManager);</span>
+    }
+
+    public static &lt;T extends KeyManagerFactory&gt; X509ExtendedKeyManager getKeyManager(T keyManagerFactory) {
+<span class="fc" id="L161">        return Arrays.stream(keyManagerFactory.getKeyManagers())</span>
+<span class="fc" id="L162">                .filter(X509KeyManager.class::isInstance)</span>
+<span class="fc" id="L163">                .map(X509KeyManager.class::cast)</span>
+<span class="fc" id="L164">                .map(KeyManagerUtils::wrapIfNeeded)</span>
+<span class="fc" id="L165">                .collect(collectingAndThen(toList(), KeyManagerUtils::combine));</span>
+    }
+
+    /**
+     * Wraps the given KeyManager into an instance of a Hot Swappable KeyManager
+     * This type of KeyManager has the capability of swapping in and out different KeyManagers at runtime.
+     */
+    public static X509ExtendedKeyManager createSwappableKeyManager(X509KeyManager keyManager) {
+<span class="fc" id="L173">        return new HotSwappableX509ExtendedKeyManager(KeyManagerUtils.wrapIfNeeded(keyManager));</span>
+    }
+
+    /**
+     * Swaps the internal TrustManager instance with the given keyManager object.
+     * The baseKeyManager should be an instance of {@link HotSwappableX509ExtendedKeyManager}
+     * and can be created with {@link KeyManagerUtils#createSwappableKeyManager(X509KeyManager)}
+     *
+     * @param baseKeyManager an instance of {@link HotSwappableX509ExtendedKeyManager}
+     * @param newKeyManager     to be injected instance of a TrustManager
+     * @throws GenericKeyManagerException if {@code baseKeyManager} is not instance of {@link HotSwappableX509ExtendedKeyManager}
+     */
+    public static void swapKeyManager(X509KeyManager baseKeyManager, X509KeyManager newKeyManager) {
+<span class="fc bfc" id="L186" title="All 2 branches covered.">        if (newKeyManager instanceof HotSwappableX509ExtendedKeyManager) {</span>
+<span class="fc" id="L187">            throw new GenericKeyManagerException(</span>
+<span class="fc" id="L188">                    String.format(&quot;The newKeyManager should not be an instance of [%s]&quot;, HotSwappableX509ExtendedKeyManager.class.getName())</span>
+            );
+        }
+
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (baseKeyManager instanceof HotSwappableX509ExtendedKeyManager) {</span>
+<span class="fc" id="L193">            ((HotSwappableX509ExtendedKeyManager) baseKeyManager).setKeyManager(KeyManagerUtils.wrapIfNeeded(newKeyManager));</span>
+        } else {
+<span class="fc" id="L195">            throw new GenericKeyManagerException(</span>
+<span class="fc" id="L196">                    String.format(&quot;The baseKeyManager is from the instance of [%s] and should be an instance of [%s].&quot;,</span>
+<span class="fc" id="L197">                            baseKeyManager.getClass().getName(),</span>
+<span class="fc" id="L198">                            HotSwappableX509ExtendedKeyManager.class.getName())</span>
+            );
+        }
+<span class="fc" id="L201">    }</span>
+
+    public static void addClientIdentityRoute(X509ExtendedKeyManager keyManager, String clientAlias, String... hosts) {
+<span class="fc" id="L204">        Objects.requireNonNull(keyManager);</span>
+<span class="fc" id="L205">        Objects.requireNonNull(clientAlias);</span>
+<span class="fc" id="L206">        Objects.requireNonNull(hosts);</span>
+
+<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (keyManager instanceof CompositeX509ExtendedKeyManager) {</span>
+<span class="fc" id="L209">            CompositeX509ExtendedKeyManager compositeX509ExtendedKeyManager = (CompositeX509ExtendedKeyManager) keyManager;</span>
+<span class="fc" id="L210">            Map&lt;String, List&lt;URI&gt;&gt; clientAliasToHosts = compositeX509ExtendedKeyManager.getPreferredClientAliasToHosts();</span>
+
+<span class="fc bfc" id="L212" title="All 2 branches covered.">            for (String host : hosts) {</span>
+<span class="fc" id="L213">                URI uri = URI.create(host);</span>
+<span class="fc" id="L214">                UriUtils.validate(uri);</span>
+
+<span class="fc bfc" id="L216" title="All 2 branches covered.">                if (clientAliasToHosts.containsKey(clientAlias)) {</span>
+<span class="fc" id="L217">                    clientAliasToHosts.get(clientAlias).add(uri);</span>
+                } else {
+<span class="fc" id="L219">                    clientAliasToHosts.put(clientAlias, new ArrayList&lt;&gt;(Collections.singleton(uri)));</span>
+                }
+            }
+<span class="fc" id="L222">        } else {</span>
+<span class="fc" id="L223">            throw new GenericKeyManagerException(String.format(</span>
+                    &quot;KeyManager should be an instance of: [%s], but received: [%s]&quot;,
+<span class="fc" id="L225">                    CompositeX509ExtendedKeyManager.class.getName(),</span>
+<span class="fc" id="L226">                    keyManager.getClass().getName()));</span>
+        }
+<span class="fc" id="L228">    }</span>
+
+    public static Map&lt;String, List&lt;String&gt;&gt; getClientIdentityRoute(X509ExtendedKeyManager keyManager) {
+<span class="fc" id="L231">        Objects.requireNonNull(keyManager);</span>
+
+<span class="fc bfc" id="L233" title="All 2 branches covered.">        if (keyManager instanceof CompositeX509ExtendedKeyManager) {</span>
+<span class="fc" id="L234">            return ((CompositeX509ExtendedKeyManager) keyManager)</span>
+<span class="fc" id="L235">                    .getPreferredClientAliasToHosts()</span>
+<span class="fc" id="L236">                    .entrySet().stream()</span>
+<span class="fc" id="L237">                    .collect(Collectors.toMap(</span>
+                            Map.Entry::getKey,
+<span class="fc" id="L239">                            hosts -&gt; hosts.getValue().stream()</span>
+<span class="fc" id="L240">                                    .map(URI::toString)</span>
+<span class="fc" id="L241">                                    .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList)))</span>
+                    );
+        } else {
+<span class="fc" id="L244">            throw new GenericKeyManagerException(String.format(</span>
+                    &quot;KeyManager should be an instance of: [%s], but received: [%s]&quot;,
+<span class="fc" id="L246">                    CompositeX509ExtendedKeyManager.class.getName(),</span>
+<span class="fc" id="L247">                    keyManager.getClass().getName()));</span>
+        }
+    }
+
+    private static List&lt;X509ExtendedKeyManager&gt; unwrapIfPossible(X509ExtendedKeyManager keyManager) {
+<span class="fc" id="L252">        List&lt;X509ExtendedKeyManager&gt; keyManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L253" title="All 2 branches covered.">        if (keyManager instanceof CompositeX509ExtendedKeyManager) {</span>
+<span class="fc bfc" id="L254" title="All 2 branches covered.">            for (X509ExtendedKeyManager innerKeyManager : ((CompositeX509ExtendedKeyManager) keyManager).getKeyManagers()) {</span>
+<span class="fc" id="L255">                List&lt;X509ExtendedKeyManager&gt; unwrappedKeyManagers = KeyManagerUtils.unwrapIfPossible(innerKeyManager);</span>
+<span class="fc" id="L256">                keyManagers.addAll(unwrappedKeyManagers);</span>
+<span class="fc" id="L257">            }</span>
+        } else {
+<span class="fc" id="L259">            keyManagers.add(keyManager);</span>
+        }
+
+<span class="fc" id="L262">        return keyManagers;</span>
+    }
+
+    public static KeyManagerBuilder keyManagerBuilder() {
+<span class="fc" id="L266">        return new KeyManagerBuilder();</span>
+    }
+
+    public static final class KeyManagerBuilder {
+
+        private static final String EMPTY_KEY_MANAGER_EXCEPTION = &quot;Input does not contain KeyManagers&quot;;
+
+<span class="fc" id="L273">        private final List&lt;X509ExtendedKeyManager&gt; keyManagers = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L274">        private final Map&lt;String, List&lt;URI&gt;&gt; clientAliasToHost = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L275">        private boolean swappableKeyManagerEnabled = false;</span>
+
+<span class="fc" id="L277">        private KeyManagerBuilder() {}</span>
+
+        public &lt;T extends X509KeyManager&gt; KeyManagerBuilder withKeyManagers(T... keyManagers) {
+<span class="fc bfc" id="L280" title="All 2 branches covered.">            for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L281">                withKeyManager(keyManager);</span>
+            }
+<span class="fc" id="L283">            return this;</span>
+        }
+
+        public &lt;T extends X509KeyManager&gt; KeyManagerBuilder withKeyManagers(List&lt;T&gt; keyManagers) {
+<span class="fc bfc" id="L287" title="All 2 branches covered.">            for (X509KeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L288">                withKeyManager(keyManager);</span>
+<span class="fc" id="L289">            }</span>
+<span class="fc" id="L290">            return this;</span>
+        }
+
+        public &lt;T extends X509KeyManager&gt; KeyManagerBuilder withKeyManager(T keyManager) {
+<span class="fc" id="L294">            this.keyManagers.add(KeyManagerUtils.wrapIfNeeded(keyManager));</span>
+<span class="fc" id="L295">            return this;</span>
+        }
+
+        public &lt;T extends KeyStoreHolder&gt; KeyManagerBuilder withIdentities(T... identities) {
+<span class="fc" id="L299">            return withIdentities(Arrays.asList(identities));</span>
+        }
+
+        public KeyManagerBuilder withIdentities(List&lt;? extends KeyStoreHolder&gt; identities) {
+<span class="fc bfc" id="L303" title="All 2 branches covered.">            for (KeyStoreHolder identity : identities) {</span>
+<span class="fc" id="L304">                this.keyManagers.add(KeyManagerUtils.createKeyManager(identity.getKeyStore(), identity.getKeyPassword()));</span>
+<span class="fc" id="L305">            }</span>
+<span class="fc" id="L306">            return this;</span>
+        }
+
+        public &lt;T extends KeyStore&gt; KeyManagerBuilder withIdentity(T identity, char[] identityPassword, String keyManagerAlgorithm) {
+<span class="fc" id="L310">            this.keyManagers.add(KeyManagerUtils.createKeyManager(identity, identityPassword, keyManagerAlgorithm));</span>
+<span class="fc" id="L311">            return this;</span>
+        }
+
+        public KeyManagerBuilder withSwappableKeyManager(boolean swappableKeyManagerEnabled) {
+<span class="fc" id="L315">            this.swappableKeyManagerEnabled = swappableKeyManagerEnabled;</span>
+<span class="fc" id="L316">            return this;</span>
+        }
+
+        public KeyManagerBuilder withClientAliasToHost(Map&lt;String, List&lt;URI&gt;&gt; clientAliasToHost) {
+<span class="fc" id="L320">            this.clientAliasToHost.putAll(clientAliasToHost);</span>
+<span class="fc" id="L321">            return this;</span>
+        }
+
+        public X509ExtendedKeyManager build() {
+<span class="fc bfc" id="L325" title="All 2 branches covered.">            if (keyManagers.isEmpty()) {</span>
+<span class="fc" id="L326">                throw new GenericKeyManagerException(EMPTY_KEY_MANAGER_EXCEPTION);</span>
+            }
+
+            X509ExtendedKeyManager keyManager;
+<span class="fc bfc" id="L330" title="All 2 branches covered.">            if (keyManagers.size() == 1) {</span>
+<span class="fc" id="L331">                keyManager = keyManagers.get(0);</span>
+            } else {
+<span class="fc" id="L333">                keyManager = keyManagers.stream()</span>
+<span class="fc" id="L334">                        .map(KeyManagerUtils::unwrapIfPossible)</span>
+<span class="fc" id="L335">                        .flatMap(Collection::stream)</span>
+<span class="fc" id="L336">                        .collect(collectingAndThen(toList(), km -&gt; new CompositeX509ExtendedKeyManager(km, clientAliasToHost)));</span>
+            }
+
+<span class="fc bfc" id="L339" title="All 2 branches covered.">            if (swappableKeyManagerEnabled) {</span>
+<span class="fc" id="L340">                keyManager = KeyManagerUtils.createSwappableKeyManager(keyManager);</span>
+            }
+
+<span class="fc" id="L343">            return keyManager;</span>
+        }
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UnsafeX509ExtendedTrustManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.trustmanager</a> &gt; <span class="el_source">UnsafeX509ExtendedTrustManager.java</span></div><h1>UnsafeX509ExtendedTrustManager.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.trustmanager;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.X509ExtendedTrustManager;
+import java.net.Socket;
+import java.security.cert.X509Certificate;
+
+/**
+ * An insecure {@link UnsafeX509ExtendedTrustManager TrustManager} that trusts all X.509 certificates without any verification.
+ * &lt;p&gt;
+ * &lt;strong&gt;NOTE:&lt;/strong&gt;
+ * Never use this {@link UnsafeX509ExtendedTrustManager} in production.
+ * It is purely for testing purposes, and thus it is very insecure.
+ * &lt;/p&gt;
+ * &lt;br&gt;
+ * Suppressed warning: java:S4830 - &quot;Server certificates should be verified during SSL/TLS connections&quot;
+ *                                  This TrustManager doesn't validate certificates and should not be used at production.
+ *                                  It is just meant to be used for testing purposes and it is designed not to verify server certificates.
+ *
+ * &lt;p&gt;
+ * &lt;br&gt;
+ * &lt;strong&gt;NOTE:&lt;/strong&gt;
+ * Please don't use this class directly as it is part of the internal API. Class name and methods can be changed any time.
+ * Instead use the {@link nl.altindag.ssl.util.TrustManagerUtils TrustManagerUtils} which provides the same functionality
+ * while it has a stable API because it is part of the public API.
+ * &lt;/p&gt;
+ *
+ * @author Hakan Altindag
+ */
+@SuppressWarnings(&quot;java:S4830&quot;)
+public final class UnsafeX509ExtendedTrustManager extends X509ExtendedTrustManager {
+
+<span class="fc" id="L52">    private static final X509ExtendedTrustManager INSTANCE = new UnsafeX509ExtendedTrustManager();</span>
+<span class="fc" id="L53">    private static final Logger LOGGER = LoggerFactory.getLogger(UnsafeX509ExtendedTrustManager.class);</span>
+<span class="fc" id="L54">    private static final X509Certificate[] EMPTY_X509_CERTIFICATES = new X509Certificate[0];</span>
+    private static final String CLIENT_CERTIFICATE_LOG_MESSAGE = &quot;Accepting a client certificate: [{}]&quot;;
+    private static final String SERVER_CERTIFICATE_LOG_MESSAGE = &quot;Accepting a server certificate: [{}]&quot;;
+
+    private UnsafeX509ExtendedTrustManager() {}
+
+    public static X509ExtendedTrustManager getInstance() {
+<span class="fc" id="L61">        return INSTANCE;</span>
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] x509Certificates, String authType) {
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L67">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
+        }
+<span class="fc" id="L69">    }</span>
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] x509Certificates, String authType, Socket socket) {
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L74">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
+        }
+<span class="fc" id="L76">    }</span>
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] x509Certificates, String authType, SSLEngine sslEngine) {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L81">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
+        }
+<span class="fc" id="L83">    }</span>
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] x509Certificates, String authType) {
+<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L88">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
+        }
+<span class="fc" id="L90">    }</span>
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] x509Certificates, String authType, Socket socket) {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L95">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
+        }
+<span class="fc" id="L97">    }</span>
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] x509Certificates, String authType, SSLEngine sslEngine) {
+<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
+<span class="fc" id="L102">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
+        }
+<span class="fc" id="L104">    }</span>
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+<span class="fc" id="L108">        return EMPTY_X509_CERTIFICATES;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLParametersUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.util</a> &gt; <span class="el_source">SSLParametersUtils.java</span></div><h1>SSLParametersUtils.java</h1><pre class="source lang-java linenums">package nl.altindag.ssl.util;
+
+import javax.net.ssl.SSLParameters;
+import java.util.Optional;
+
+public final class SSLParametersUtils {
+
+    private SSLParametersUtils() {
+    }
+
+    public static SSLParameters copy(SSLParameters source) {
+<span class="fc" id="L12">        SSLParameters target = new SSLParameters();</span>
+<span class="fc" id="L13">        target.setProtocols(source.getProtocols());</span>
+<span class="fc" id="L14">        target.setCipherSuites(source.getCipherSuites());</span>
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        if (source.getWantClientAuth()) {</span>
+<span class="fc" id="L16">            target.setWantClientAuth(true);</span>
+        }
+
+<span class="fc bfc" id="L19" title="All 2 branches covered.">        if (source.getNeedClientAuth()) {</span>
+<span class="fc" id="L20">            target.setNeedClientAuth(true);</span>
+        }
+<span class="fc" id="L22">        return target;</span>
+    }
+
+    public static SSLParameters merge(SSLParameters baseSslParameters, SSLParameters alternativeSslParameters) {
+<span class="fc" id="L26">        SSLParameters target = new SSLParameters();</span>
+
+<span class="fc" id="L28">        String[] ciphers = Optional.ofNullable(baseSslParameters.getCipherSuites())</span>
+<span class="fc" id="L29">                .orElse(alternativeSslParameters.getCipherSuites());</span>
+<span class="fc" id="L30">        String[] protocols = Optional.ofNullable(baseSslParameters.getProtocols())</span>
+<span class="fc" id="L31">                .orElse(alternativeSslParameters.getProtocols());</span>
+
+<span class="fc" id="L33">        target.setCipherSuites(ciphers);</span>
+<span class="fc" id="L34">        target.setProtocols(protocols);</span>
+
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        boolean wantClientAuth = baseSslParameters.getWantClientAuth() ? baseSslParameters.getWantClientAuth() : alternativeSslParameters.getWantClientAuth();</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">        if (wantClientAuth) {</span>
+<span class="fc" id="L38">            target.setWantClientAuth(true);</span>
+        }
+
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        boolean needClientAuth = baseSslParameters.getNeedClientAuth() ? baseSslParameters.getNeedClientAuth() : alternativeSslParameters.getNeedClientAuth();</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (needClientAuth) {</span>
+<span class="fc" id="L43">            target.setNeedClientAuth(true);</span>
+        }
+
+<span class="fc" id="L46">        return target;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

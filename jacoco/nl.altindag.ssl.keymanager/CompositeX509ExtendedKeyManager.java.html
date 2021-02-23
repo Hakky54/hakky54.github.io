@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompositeX509ExtendedKeyManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.keymanager</a> &gt; <span class="el_source">CompositeX509ExtendedKeyManager.java</span></div><h1>CompositeX509ExtendedKeyManager.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.keymanager;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.X509ExtendedKeyManager;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URI;
+import java.security.Principal;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+/**
+ * Represents an ordered list of {@link X509ExtendedKeyManager} with most-preferred managers first.
+ *
+ * This is necessary because of the fine-print on {@link javax.net.ssl.SSLContext#init}:
+ * Only the first instance of a particular key and/or key manager implementation type in the
+ * array is used. (For example, only the first javax.net.ssl.X509KeyManager in the array will be used.)
+ * The KeyManager can be build from one or more of any combination provided within the {@link nl.altindag.ssl.util.KeyManagerUtils.KeyManagerBuilder KeyManagerUtils.KeyManagerBuilder}.
+ * &lt;br&gt;&lt;br&gt;
+ * This includes:
+ * &lt;pre&gt;
+ *     - Any amount of custom KeyManagers
+ *     - Any amount of custom Identities
+ * &lt;/pre&gt;
+ *
+ * &lt;p&gt;
+ * &lt;strong&gt;NOTE:&lt;/strong&gt;
+ * Please don't use this class directly as it is part of the internal API. Class name and methods can be changed any time.
+ * Instead use the {@link nl.altindag.ssl.util.KeyManagerUtils KeyManagerUtils} which provides the same functionality
+ * while it has a stable API because it is part of the public API.
+ * &lt;/p&gt;
+ *
+ * @see &lt;a href=&quot;http://stackoverflow.com/questions/1793979/registering-multiple-keystores-in-jvm&quot;&gt;
+ *     http://stackoverflow.com/questions/1793979/registering-multiple-keystores-in-jvm
+ *     &lt;/a&gt;
+ * @see &lt;a href=&quot;http://codyaray.com/2013/04/java-ssl-with-multiple-keystores&quot;&gt;
+ *     http://codyaray.com/2013/04/java-ssl-with-multiple-keystores
+ *     &lt;/a&gt;
+ *
+ * @author Cody Ray
+ * @author Hakan Altinda
+ */
+public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManager {
+
+    private final List&lt;X509ExtendedKeyManager&gt; keyManagers;
+    private final Map&lt;String, List&lt;URI&gt;&gt; preferredClientAliasToHost;
+
+    /**
+     * Creates a new {@link CompositeX509ExtendedKeyManager}.
+     *
+     * @param keyManagers the {@link X509ExtendedKeyManager}, ordered with the most-preferred managers first.
+     */
+    public CompositeX509ExtendedKeyManager(List&lt;? extends X509ExtendedKeyManager&gt; keyManagers) {
+<span class="fc" id="L77">        this(keyManagers, Collections.emptyMap());</span>
+<span class="fc" id="L78">    }</span>
+
+    /**
+     * Creates a new {@link CompositeX509ExtendedKeyManager}.
+     *
+     * @param keyManagers                the {@link X509ExtendedKeyManager}, ordered with the most-preferred managers first.
+     * @param preferredClientAliasToHost the preferred client alias to be used for the given host
+     */
+    public CompositeX509ExtendedKeyManager(List&lt;? extends X509ExtendedKeyManager&gt; keyManagers,
+<span class="fc" id="L87">                                           Map&lt;String, List&lt;URI&gt;&gt; preferredClientAliasToHost) {</span>
+<span class="fc" id="L88">        this.keyManagers = Collections.unmodifiableList(keyManagers);</span>
+<span class="fc" id="L89">        this.preferredClientAliasToHost = new HashMap&lt;&gt;(preferredClientAliasToHost);</span>
+<span class="fc" id="L90">    }</span>
+
+    /**
+     * Chooses the first non-null client alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket) {
+<span class="fc" id="L98">        Optional&lt;String&gt; preferredAlias = Optional.empty();</span>
+<span class="fc bfc" id="L99" title="All 6 branches covered.">        if (!preferredClientAliasToHost.isEmpty() &amp;&amp; socket != null &amp;&amp; socket.getRemoteSocketAddress() instanceof InetSocketAddress) {</span>
+<span class="fc" id="L100">            InetSocketAddress address = (InetSocketAddress) socket.getRemoteSocketAddress();</span>
+<span class="fc" id="L101">            preferredAlias = getPreferredClientAlias(address.getHostName(), address.getPort());</span>
+        }
+
+<span class="fc bfc" id="L104" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L105">            String alias = keyManager.chooseClientAlias(keyType, issuers, socket);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">                if (preferredAlias.isPresent()) {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                    if (preferredAlias.get().equals(alias)) {</span>
+<span class="fc" id="L109">                        return alias;</span>
+                    }
+                } else {
+<span class="fc" id="L112">                    return alias;</span>
+                }
+            }
+<span class="fc" id="L115">        }</span>
+<span class="fc" id="L116">        return null;</span>
+    }
+
+    /**
+     * Chooses the first non-null client alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseEngineClientAlias(String[] keyTypes, Principal[] issuers, SSLEngine sslEngine) {
+<span class="fc" id="L125">        Optional&lt;String&gt; preferredAlias = Optional.empty();</span>
+<span class="fc bfc" id="L126" title="All 4 branches covered.">        if (!preferredClientAliasToHost.isEmpty() &amp;&amp; sslEngine != null) {</span>
+<span class="fc" id="L127">            preferredAlias = getPreferredClientAlias(sslEngine.getPeerHost(), sslEngine.getPeerPort());</span>
+        }
+
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L131">            String alias = keyManager.chooseEngineClientAlias(keyTypes, issuers, sslEngine);</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">                if (preferredAlias.isPresent()) {</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">                    if (preferredAlias.get().equals(alias)) {</span>
+<span class="fc" id="L135">                        return alias;</span>
+                    }
+                } else {
+<span class="fc" id="L138">                    return alias;</span>
+                }
+            }
+<span class="fc" id="L141">        }</span>
+<span class="fc" id="L142">        return null;</span>
+    }
+
+    private Optional&lt;String&gt; getPreferredClientAlias(String peerHost, int peerPort) {
+<span class="fc" id="L146">        return preferredClientAliasToHost.entrySet().stream()</span>
+<span class="fc" id="L147">                .filter(entry -&gt; entry.getValue().stream().anyMatch(uri -&gt; uri.getHost().equals(peerHost)))</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">                .filter(entry -&gt; entry.getValue().stream().anyMatch(uri -&gt; uri.getPort() == peerPort))</span>
+<span class="fc" id="L149">                .findFirst()</span>
+<span class="fc" id="L150">                .map(Map.Entry::getKey);</span>
+    }
+
+    /**
+     * Chooses the first non-null server alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket) {
+<span class="fc bfc" id="L159" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L160">            String alias = keyManager.chooseServerAlias(keyType, issuers, socket);</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L162">                return alias;</span>
+            }
+<span class="fc" id="L164">        }</span>
+<span class="fc" id="L165">        return null;</span>
+    }
+
+    /**
+     * Chooses the first non-null server alias returned from the delegate
+     * {@link X509ExtendedKeyManager}, or {@code null} if there are no matches.
+     */
+    @Override
+    public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine sslEngine) {
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L175">            String alias = keyManager.chooseEngineServerAlias(keyType, issuers, sslEngine);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">            if (alias != null) {</span>
+<span class="fc" id="L177">                return alias;</span>
+            }
+<span class="fc" id="L179">        }</span>
+<span class="fc" id="L180">        return null;</span>
+    }
+
+    /**
+     * Returns the first non-null private key associated with the
+     * given alias, or {@code null} if the alias can't be found.
+     */
+    @Override
+    public PrivateKey getPrivateKey(String alias) {
+<span class="fc bfc" id="L189" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L190">            PrivateKey privateKey = keyManager.getPrivateKey(alias);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            if (privateKey != null) {</span>
+<span class="fc" id="L192">                return privateKey;</span>
+            }
+<span class="fc" id="L194">        }</span>
+<span class="fc" id="L195">        return null;</span>
+    }
+
+    /**
+     * Returns the first non-null certificate chain associated with the
+     * given alias, or {@code null} if the alias can't be found.
+     */
+    @Override
+    public X509Certificate[] getCertificateChain(String alias) {
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L205">            X509Certificate[] chain = keyManager.getCertificateChain(alias);</span>
+<span class="fc bfc" id="L206" title="All 4 branches covered.">            if (chain != null &amp;&amp; chain.length &gt; 0) {</span>
+<span class="fc" id="L207">                return chain;</span>
+            }
+<span class="fc" id="L209">        }</span>
+<span class="fc" id="L210">        return null;</span>
+    }
+
+    /**
+     * Get all matching aliases for authenticating the client side of a
+     * secure socket, or {@code null} if there are no matches.
+     */
+    @Override
+    public String[] getClientAliases(String keyType, Principal[] issuers) {
+<span class="fc" id="L219">        List&lt;String&gt; clientAliases = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L221">            Optional.ofNullable(keyManager.getClientAliases(keyType, issuers))</span>
+<span class="fc" id="L222">                    .ifPresent(aliases -&gt; clientAliases.addAll(Arrays.asList(aliases)));</span>
+<span class="fc" id="L223">        }</span>
+<span class="fc" id="L224">        return emptyToNull(clientAliases.toArray(new String[]{}));</span>
+    }
+
+    /**
+     * Get all matching aliases for authenticating the server side of a
+     * secure socket, or {@code null} if there are no matches.
+     */
+    @Override
+    public String[] getServerAliases(String keyType, Principal[] issuers) {
+<span class="fc" id="L233">        List&lt;String&gt; serverAliases = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">        for (X509ExtendedKeyManager keyManager : keyManagers) {</span>
+<span class="fc" id="L235">            Optional.ofNullable(keyManager.getServerAliases(keyType, issuers))</span>
+<span class="fc" id="L236">                    .ifPresent(aliases -&gt; serverAliases.addAll(Arrays.asList(aliases)));</span>
+<span class="fc" id="L237">        }</span>
+<span class="fc" id="L238">        return emptyToNull(serverAliases.toArray(new String[]{}));</span>
+    }
+
+    private &lt;T&gt; T[] emptyToNull(T[] arr) {
+<span class="fc bfc" id="L242" title="All 2 branches covered.">        return (arr.length == 0) ? null : arr;</span>
+    }
+
+    public int size() {
+<span class="fc" id="L246">        return keyManagers.size();</span>
+    }
+
+    public List&lt;X509ExtendedKeyManager&gt; getKeyManagers() {
+<span class="fc" id="L250">        return keyManagers;</span>
+    }
+
+    public Map&lt;String, List&lt;URI&gt;&gt; getPreferredClientAliasToHosts() {
+<span class="fc" id="L254">        return preferredClientAliasToHost;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

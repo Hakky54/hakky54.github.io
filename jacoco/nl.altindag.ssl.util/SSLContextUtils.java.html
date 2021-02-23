@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLContextUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.util</a> &gt; <span class="el_source">SSLContextUtils.java</span></div><h1>SSLContextUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.util;
+
+import nl.altindag.ssl.exception.GenericSSLContextException;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509ExtendedKeyManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import javax.net.ssl.X509KeyManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.SecureRandom;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
+
+/**
+ * @author Hakan Altindag
+ */
+public final class SSLContextUtils {
+
+    private static final String DEFAULT_SSL_CONTEXT_ALGORITHM = &quot;TLS&quot;;
+
+    private SSLContextUtils() {
+    }
+
+    public static SSLContext createSslContext(List&lt;? extends X509KeyManager&gt; keyManagers, List&lt;? extends X509TrustManager&gt; trustManagers) {
+<span class="fc" id="L46">        return createSslContext(keyManagers, trustManagers, null);</span>
+    }
+
+    public static SSLContext createSslContext(List&lt;? extends X509KeyManager&gt; keyManagers, List&lt;? extends X509TrustManager&gt; trustManagers, SecureRandom secureRandom) {
+<span class="fc" id="L50">        return createSslContext(keyManagers, trustManagers, secureRandom, DEFAULT_SSL_CONTEXT_ALGORITHM, (Provider) null);</span>
+    }
+
+    public static SSLContext createSslContext(
+            List&lt;? extends X509KeyManager&gt; keyManagers,
+            List&lt;? extends X509TrustManager&gt; trustManagers,
+            SecureRandom secureRandom,
+            String sslContextAlgorithm,
+            Provider securityProvider) {
+
+<span class="fc" id="L60">        return createSslContext(</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                !keyManagers.isEmpty() ? KeyManagerUtils.combine(keyManagers) : null,</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">                !trustManagers.isEmpty() ? TrustManagerUtils.combine(trustManagers) : null,</span>
+                secureRandom,
+                sslContextAlgorithm,
+                null,
+                securityProvider
+        );
+    }
+
+    public static SSLContext createSslContext(
+            List&lt;? extends X509KeyManager&gt; keyManagers,
+            List&lt;? extends X509TrustManager&gt; trustManagers,
+            SecureRandom secureRandom,
+            String sslContextAlgorithm,
+            String securityProviderName) {
+
+<span class="fc" id="L77">        return createSslContext(</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">                !keyManagers.isEmpty() ? KeyManagerUtils.combine(keyManagers) : null,</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                !trustManagers.isEmpty() ? TrustManagerUtils.combine(trustManagers) : null,</span>
+                secureRandom,
+                sslContextAlgorithm,
+                securityProviderName,
+                null
+        );
+    }
+
+    public static SSLContext createSslContext(
+            X509KeyManager keyManager,
+            X509TrustManager trustManager,
+            SecureRandom secureRandom,
+            String sslContextAlgorithm,
+            String securityProviderName,
+            Provider securityProvider) {
+
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        return createSslContext(</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">                keyManager != null ? KeyManagerUtils.toArray(keyManager) : null,</span>
+<span class="fc" id="L97">                trustManager != null ? TrustManagerUtils.toArray(trustManager) : null,</span>
+                secureRandom,
+                sslContextAlgorithm,
+                securityProviderName,
+                securityProvider
+        );
+    }
+
+    private static SSLContext createSslContext(
+            X509ExtendedKeyManager[] keyManagers,
+            X509ExtendedTrustManager[] trustManagers,
+            SecureRandom secureRandom,
+            String sslContextAlgorithm,
+            String securityProviderName,
+            Provider securityProvider) {
+
+        try {
+            SSLContext sslContext;
+<span class="fc bfc" id="L115" title="All 2 branches covered.">            if (nonNull(securityProvider)) {</span>
+<span class="fc" id="L116">                sslContext = SSLContext.getInstance(sslContextAlgorithm, securityProvider);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">            } else if (nonNull(securityProviderName)) {</span>
+<span class="fc" id="L118">                sslContext = SSLContext.getInstance(sslContextAlgorithm, securityProviderName);</span>
+            } else {
+<span class="fc" id="L120">                sslContext = SSLContext.getInstance(sslContextAlgorithm);</span>
+            }
+
+<span class="fc" id="L123">            sslContext.init(keyManagers, trustManagers, secureRandom);</span>
+<span class="fc" id="L124">            return sslContext;</span>
+<span class="fc" id="L125">        } catch (NoSuchAlgorithmException | KeyManagementException | NoSuchProviderException e) {</span>
+<span class="fc" id="L126">            throw new GenericSSLContextException(e);</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
