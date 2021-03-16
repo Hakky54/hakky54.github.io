@@ -297,135 +297,177 @@
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>     }
 <a class="jxr_linenumber" name="L290" href="#L290">290</a> 
 <a class="jxr_linenumber" name="L291" href="#L291">291</a>     @Test
-<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerFromKeyStoreWhichDoesNotHaveMatchingAlias() <strong class="jxr_keyword">throws</strong> KeyStoreException {
-<a class="jxr_linenumber" name="L293" href="#L293">293</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + <span class="jxr_string">"identity-with-multiple-keys.jks"</span>, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L294" href="#L294">294</a> 
-<a class="jxr_linenumber" name="L295" href="#L295">295</a>         assertThat(identity.size()).isEqualTo(2);
-<a class="jxr_linenumber" name="L296" href="#L296">296</a> 
-<a class="jxr_linenumber" name="L297" href="#L297">297</a>         assertThat(identity.containsAlias(<span class="jxr_string">"Jessie"</span>)).isFalse();
-<a class="jxr_linenumber" name="L298" href="#L298">298</a>         assertThat(identity.containsAlias(<span class="jxr_string">"James"</span>)).isFalse();
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> 
-<a class="jxr_linenumber" name="L300" href="#L300">300</a> 
-<a class="jxr_linenumber" name="L301" href="#L301">301</a>         Map&lt;String, <strong class="jxr_keyword">char</strong>[]&gt; aliasToPassword = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L302" href="#L302">302</a>         aliasToPassword.put(<span class="jxr_string">"Jessie"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
-<a class="jxr_linenumber" name="L303" href="#L303">303</a>         aliasToPassword.put(<span class="jxr_string">"James"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
-<a class="jxr_linenumber" name="L304" href="#L304">304</a> 
-<a class="jxr_linenumber" name="L305" href="#L305">305</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, aliasToPassword))
-<a class="jxr_linenumber" name="L306" href="#L306">306</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L307" href="#L307">307</a>                 .hasMessage(<span class="jxr_string">"Could not create any KeyManager from the given KeyStore, Alias and Password"</span>);
-<a class="jxr_linenumber" name="L308" href="#L308">308</a>     }
+<a class="jxr_linenumber" name="L292" href="#L292">292</a>     <strong class="jxr_keyword">void</strong> overrideClientIdentityRoutes() {
+<a class="jxr_linenumber" name="L293" href="#L293">293</a>         KeyStore identityOne = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L294" href="#L294">294</a>         KeyStore identityTwo = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_TWO_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L295" href="#L295">295</a> 
+<a class="jxr_linenumber" name="L296" href="#L296">296</a>         X509ExtendedKeyManager keyManagerOne = KeyManagerUtils.createKeyManager(identityOne, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L297" href="#L297">297</a>         X509ExtendedKeyManager keyManagerTwo = KeyManagerUtils.createKeyManager(identityTwo, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L298" href="#L298">298</a> 
+<a class="jxr_linenumber" name="L299" href="#L299">299</a>         X509ExtendedKeyManager keyManager = KeyManagerUtils.combine(keyManagerOne, keyManagerTwo);
+<a class="jxr_linenumber" name="L300" href="#L300">300</a>         KeyManagerUtils.addClientIdentityRoute(keyManager, <span class="jxr_string">"client"</span>,<span class="jxr_string">"https://localhost:8443/"</span>, <span class="jxr_string">"https://localhost:8453/"</span>);
+<a class="jxr_linenumber" name="L301" href="#L301">301</a>         Map&lt;String, List&lt;String&gt;&gt; clientIdentityRoute = KeyManagerUtils.getClientIdentityRoute(keyManager);
+<a class="jxr_linenumber" name="L302" href="#L302">302</a> 
+<a class="jxr_linenumber" name="L303" href="#L303">303</a>         assertThat(clientIdentityRoute)
+<a class="jxr_linenumber" name="L304" href="#L304">304</a>                 .containsKey(<span class="jxr_string">"client"</span>)
+<a class="jxr_linenumber" name="L305" href="#L305">305</a>                 .containsValue(Arrays.asList(<span class="jxr_string">"https://localhost:8443/"</span>, <span class="jxr_string">"https://localhost:8453/"</span>));
+<a class="jxr_linenumber" name="L306" href="#L306">306</a> 
+<a class="jxr_linenumber" name="L307" href="#L307">307</a>         KeyManagerUtils.overrideClientIdentityRoute(keyManager, <span class="jxr_string">"client"</span>, <span class="jxr_string">"https://localhost:9443/"</span>, <span class="jxr_string">"https://localhost:9453/"</span>);
+<a class="jxr_linenumber" name="L308" href="#L308">308</a>         clientIdentityRoute = KeyManagerUtils.getClientIdentityRoute(keyManager);
 <a class="jxr_linenumber" name="L309" href="#L309">309</a> 
-<a class="jxr_linenumber" name="L310" href="#L310">310</a>     @Test
-<a class="jxr_linenumber" name="L311" href="#L311">311</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerFromKeyStoreWithIncorrectKeyPassword() <strong class="jxr_keyword">throws</strong> KeyStoreException {
-<a class="jxr_linenumber" name="L312" href="#L312">312</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + <span class="jxr_string">"identity-with-multiple-keys.jks"</span>, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L313" href="#L313">313</a> 
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>         assertThat(identity.size()).isEqualTo(2);
+<a class="jxr_linenumber" name="L310" href="#L310">310</a>         assertThat(clientIdentityRoute)
+<a class="jxr_linenumber" name="L311" href="#L311">311</a>                 .containsKey(<span class="jxr_string">"client"</span>)
+<a class="jxr_linenumber" name="L312" href="#L312">312</a>                 .doesNotContainValue(Arrays.asList(<span class="jxr_string">"https://localhost:8443/"</span>, <span class="jxr_string">"https://localhost:8453/"</span>))
+<a class="jxr_linenumber" name="L313" href="#L313">313</a>                 .containsValue(Arrays.asList(<span class="jxr_string">"https://localhost:9443/"</span>, <span class="jxr_string">"https://localhost:9453/"</span>));
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>     }
 <a class="jxr_linenumber" name="L315" href="#L315">315</a> 
-<a class="jxr_linenumber" name="L316" href="#L316">316</a>         assertThat(identity.containsAlias(<span class="jxr_string">"kaiba"</span>)).isTrue();
-<a class="jxr_linenumber" name="L317" href="#L317">317</a>         assertThat(identity.isKeyEntry(<span class="jxr_string">"kaiba"</span>)).isTrue();
-<a class="jxr_linenumber" name="L318" href="#L318">318</a> 
-<a class="jxr_linenumber" name="L319" href="#L319">319</a>         assertThat(identity.containsAlias(<span class="jxr_string">"yugioh"</span>)).isTrue();
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>         assertThat(identity.isKeyEntry(<span class="jxr_string">"yugioh"</span>)).isTrue();
-<a class="jxr_linenumber" name="L321" href="#L321">321</a> 
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> 
-<a class="jxr_linenumber" name="L323" href="#L323">323</a>         Map&lt;String, <strong class="jxr_keyword">char</strong>[]&gt; aliasToPassword = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
-<a class="jxr_linenumber" name="L324" href="#L324">324</a>         aliasToPassword.put(<span class="jxr_string">"kaiba"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
-<a class="jxr_linenumber" name="L325" href="#L325">325</a>         aliasToPassword.put(<span class="jxr_string">"yugioh"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
-<a class="jxr_linenumber" name="L326" href="#L326">326</a> 
-<a class="jxr_linenumber" name="L327" href="#L327">327</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, aliasToPassword))
-<a class="jxr_linenumber" name="L328" href="#L328">328</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L329" href="#L329">329</a>     }
-<a class="jxr_linenumber" name="L330" href="#L330">330</a> 
-<a class="jxr_linenumber" name="L331" href="#L331">331</a>     @Test
-<a class="jxr_linenumber" name="L332" href="#L332">332</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerWithIncorrectKeyPassword() {
-<a class="jxr_linenumber" name="L333" href="#L333">333</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L334" href="#L334">334</a>         <strong class="jxr_keyword">char</strong>[] keyPassword = <span class="jxr_string">"no-password"</span>.toCharArray();
-<a class="jxr_linenumber" name="L335" href="#L335">335</a>         String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+<a class="jxr_linenumber" name="L316" href="#L316">316</a>     @Test
+<a class="jxr_linenumber" name="L317" href="#L317">317</a>     <strong class="jxr_keyword">void</strong> addClientIdentityRoutesWhenTryingToOverrideANonExistingRoute() {
+<a class="jxr_linenumber" name="L318" href="#L318">318</a>         KeyStore identityOne = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L319" href="#L319">319</a>         KeyStore identityTwo = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_TWO_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L320" href="#L320">320</a> 
+<a class="jxr_linenumber" name="L321" href="#L321">321</a>         X509ExtendedKeyManager keyManagerOne = KeyManagerUtils.createKeyManager(identityOne, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L322" href="#L322">322</a>         X509ExtendedKeyManager keyManagerTwo = KeyManagerUtils.createKeyManager(identityTwo, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L323" href="#L323">323</a> 
+<a class="jxr_linenumber" name="L324" href="#L324">324</a>         X509ExtendedKeyManager keyManager = KeyManagerUtils.combine(keyManagerOne, keyManagerTwo);
+<a class="jxr_linenumber" name="L325" href="#L325">325</a>         KeyManagerUtils.overrideClientIdentityRoute(keyManager, <span class="jxr_string">"client"</span>,<span class="jxr_string">"https://localhost:8443/"</span>, <span class="jxr_string">"https://localhost:8453/"</span>);
+<a class="jxr_linenumber" name="L326" href="#L326">326</a>         Map&lt;String, List&lt;String&gt;&gt; clientIdentityRoute = KeyManagerUtils.getClientIdentityRoute(keyManager);
+<a class="jxr_linenumber" name="L327" href="#L327">327</a> 
+<a class="jxr_linenumber" name="L328" href="#L328">328</a>         assertThat(clientIdentityRoute)
+<a class="jxr_linenumber" name="L329" href="#L329">329</a>                 .containsKey(<span class="jxr_string">"client"</span>)
+<a class="jxr_linenumber" name="L330" href="#L330">330</a>                 .containsValue(Arrays.asList(<span class="jxr_string">"https://localhost:8443/"</span>, <span class="jxr_string">"https://localhost:8453/"</span>));
+<a class="jxr_linenumber" name="L331" href="#L331">331</a>     }
+<a class="jxr_linenumber" name="L332" href="#L332">332</a> 
+<a class="jxr_linenumber" name="L333" href="#L333">333</a>     @Test
+<a class="jxr_linenumber" name="L334" href="#L334">334</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerFromKeyStoreWhichDoesNotHaveMatchingAlias() <strong class="jxr_keyword">throws</strong> KeyStoreException {
+<a class="jxr_linenumber" name="L335" href="#L335">335</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + <span class="jxr_string">"identity-with-multiple-keys.jks"</span>, IDENTITY_PASSWORD);
 <a class="jxr_linenumber" name="L336" href="#L336">336</a> 
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, keyPassword, keyManagerFactoryAlgorithm))
-<a class="jxr_linenumber" name="L338" href="#L338">338</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L339" href="#L339">339</a>     }
-<a class="jxr_linenumber" name="L340" href="#L340">340</a> 
-<a class="jxr_linenumber" name="L341" href="#L341">341</a>     @Test
-<a class="jxr_linenumber" name="L342" href="#L342">342</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerWithInvalidAlgorithm() {
-<a class="jxr_linenumber" name="L343" href="#L343">343</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L344" href="#L344">344</a> 
-<a class="jxr_linenumber" name="L345" href="#L345">345</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD, <span class="jxr_string">"NONE"</span>))
-<a class="jxr_linenumber" name="L346" href="#L346">346</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L347" href="#L347">347</a>                 .hasMessage(<span class="jxr_string">"java.security.NoSuchAlgorithmException: NONE KeyManagerFactory not available"</span>);
-<a class="jxr_linenumber" name="L348" href="#L348">348</a>     }
-<a class="jxr_linenumber" name="L349" href="#L349">349</a> 
-<a class="jxr_linenumber" name="L350" href="#L350">350</a>     @Test
-<a class="jxr_linenumber" name="L351" href="#L351">351</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerWithInvalidSecurityProviderName() {
-<a class="jxr_linenumber" name="L352" href="#L352">352</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L353" href="#L353">353</a>         String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-<a class="jxr_linenumber" name="L354" href="#L354">354</a> 
-<a class="jxr_linenumber" name="L355" href="#L355">355</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD, keyManagerFactoryAlgorithm, <span class="jxr_string">"test"</span>))
-<a class="jxr_linenumber" name="L356" href="#L356">356</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L357" href="#L357">357</a>                 .hasMessage(<span class="jxr_string">"java.security.NoSuchProviderException: no such provider: test"</span>);
-<a class="jxr_linenumber" name="L358" href="#L358">358</a>     }
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> 
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>     @Test
-<a class="jxr_linenumber" name="L361" href="#L361">361</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenInvalidSecurityProviderIsProvidedForTheKeyManagerFactoryAlgorithm() {
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>         String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         Provider sunSecurityProvider = Security.getProvider(<span class="jxr_string">"SUN"</span>);
-<a class="jxr_linenumber" name="L365" href="#L365">365</a> 
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD, keyManagerFactoryAlgorithm, sunSecurityProvider))
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>                 .hasMessage(<span class="jxr_string">"java.security.NoSuchAlgorithmException: no such algorithm: SunX509 for provider SUN"</span>);
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>     }
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     @Test
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenSwappingKeyManager() {
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>         KeyStore identityOne = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>         KeyStore identityTwo = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_TWO_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L375" href="#L375">375</a> 
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>         X509ExtendedKeyManager keyManagerOne = KeyManagerUtils.createKeyManager(identityOne, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>         X509ExtendedKeyManager keyManagerTwo = KeyManagerUtils.createKeyManager(identityTwo, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>         assertThat(identity.size()).isEqualTo(2);
+<a class="jxr_linenumber" name="L338" href="#L338">338</a> 
+<a class="jxr_linenumber" name="L339" href="#L339">339</a>         assertThat(identity.containsAlias(<span class="jxr_string">"Jessie"</span>)).isFalse();
+<a class="jxr_linenumber" name="L340" href="#L340">340</a>         assertThat(identity.containsAlias(<span class="jxr_string">"James"</span>)).isFalse();
+<a class="jxr_linenumber" name="L341" href="#L341">341</a> 
+<a class="jxr_linenumber" name="L342" href="#L342">342</a> 
+<a class="jxr_linenumber" name="L343" href="#L343">343</a>         Map&lt;String, <strong class="jxr_keyword">char</strong>[]&gt; aliasToPassword = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L344" href="#L344">344</a>         aliasToPassword.put(<span class="jxr_string">"Jessie"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
+<a class="jxr_linenumber" name="L345" href="#L345">345</a>         aliasToPassword.put(<span class="jxr_string">"James"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> 
+<a class="jxr_linenumber" name="L347" href="#L347">347</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, aliasToPassword))
+<a class="jxr_linenumber" name="L348" href="#L348">348</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L349" href="#L349">349</a>                 .hasMessage(<span class="jxr_string">"Could not create any KeyManager from the given KeyStore, Alias and Password"</span>);
+<a class="jxr_linenumber" name="L350" href="#L350">350</a>     }
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> 
+<a class="jxr_linenumber" name="L352" href="#L352">352</a>     @Test
+<a class="jxr_linenumber" name="L353" href="#L353">353</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerFromKeyStoreWithIncorrectKeyPassword() <strong class="jxr_keyword">throws</strong> KeyStoreException {
+<a class="jxr_linenumber" name="L354" href="#L354">354</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + <span class="jxr_string">"identity-with-multiple-keys.jks"</span>, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> 
+<a class="jxr_linenumber" name="L356" href="#L356">356</a>         assertThat(identity.size()).isEqualTo(2);
+<a class="jxr_linenumber" name="L357" href="#L357">357</a> 
+<a class="jxr_linenumber" name="L358" href="#L358">358</a>         assertThat(identity.containsAlias(<span class="jxr_string">"kaiba"</span>)).isTrue();
+<a class="jxr_linenumber" name="L359" href="#L359">359</a>         assertThat(identity.isKeyEntry(<span class="jxr_string">"kaiba"</span>)).isTrue();
+<a class="jxr_linenumber" name="L360" href="#L360">360</a> 
+<a class="jxr_linenumber" name="L361" href="#L361">361</a>         assertThat(identity.containsAlias(<span class="jxr_string">"yugioh"</span>)).isTrue();
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>         assertThat(identity.isKeyEntry(<span class="jxr_string">"yugioh"</span>)).isTrue();
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> 
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> 
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>         Map&lt;String, <strong class="jxr_keyword">char</strong>[]&gt; aliasToPassword = <strong class="jxr_keyword">new</strong> HashMap&lt;&gt;();
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>         aliasToPassword.put(<span class="jxr_string">"kaiba"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>         aliasToPassword.put(<span class="jxr_string">"yugioh"</span>, <span class="jxr_string">"team-rocket"</span>.toCharArray());
+<a class="jxr_linenumber" name="L368" href="#L368">368</a> 
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, aliasToPassword))
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>     }
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> 
+<a class="jxr_linenumber" name="L373" href="#L373">373</a>     @Test
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerWithIncorrectKeyPassword() {
+<a class="jxr_linenumber" name="L375" href="#L375">375</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L376" href="#L376">376</a>         <strong class="jxr_keyword">char</strong>[] keyPassword = <span class="jxr_string">"no-password"</span>.toCharArray();
+<a class="jxr_linenumber" name="L377" href="#L377">377</a>         String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
 <a class="jxr_linenumber" name="L378" href="#L378">378</a> 
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.swapKeyManager(keyManagerOne, keyManagerTwo))
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>                 .hasMessage(<span class="jxr_string">"The baseKeyManager is from the instance of [sun.security.ssl.SunX509KeyManagerImpl] "</span> +
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>                         <span class="jxr_string">"and should be an instance of [nl.altindag.ssl.keymanager.HotSwappableX509ExtendedKeyManager]."</span>);
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>     }
-<a class="jxr_linenumber" name="L384" href="#L384">384</a> 
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>     @Test
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenSwappingKeyManagerWithANewKeyManager() {
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>         KeyStore identityOne = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>         KeyStore identityTwo = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_TWO_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L389" href="#L389">389</a> 
-<a class="jxr_linenumber" name="L390" href="#L390">390</a>         X509ExtendedKeyManager baseKeyManager = KeyManagerUtils.createSwappableKeyManager(KeyManagerUtils.createKeyManager(identityOne, IDENTITY_PASSWORD));
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>         X509ExtendedKeyManager newKeyManager = KeyManagerUtils.createSwappableKeyManager(KeyManagerUtils.createKeyManager(identityTwo, IDENTITY_PASSWORD));
-<a class="jxr_linenumber" name="L392" href="#L392">392</a> 
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.swapKeyManager(baseKeyManager, newKeyManager))
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>                 .hasMessage(<span class="jxr_string">"The newKeyManager should not be an instance of [nl.altindag.ssl.keymanager.HotSwappableX509ExtendedKeyManager]"</span>);
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>     }
-<a class="jxr_linenumber" name="L397" href="#L397">397</a> 
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>     @Test
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenAddingNewClientIdentityRoute() {
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>         X509ExtendedKeyManager keyManager = KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L402" href="#L402">402</a> 
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.addClientIdentityRoute(keyManager, <span class="jxr_string">"another-server"</span>, <span class="jxr_string">"https://localhost:8443/"</span>))
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L405" href="#L405">405</a>                 .hasMessage(<span class="jxr_string">"KeyManager should be an instance of: [nl.altindag.ssl.keymanager.CompositeX509ExtendedKeyManager], "</span> +
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>                             <span class="jxr_string">"but received: [sun.security.ssl.SunX509KeyManagerImpl]"</span>);
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>     }
-<a class="jxr_linenumber" name="L408" href="#L408">408</a> 
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>     @Test
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenGettingClientIdentityRoute() {
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>         X509ExtendedKeyManager keyManager = KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD);
-<a class="jxr_linenumber" name="L413" href="#L413">413</a> 
-<a class="jxr_linenumber" name="L414" href="#L414">414</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.getClientIdentityRoute(keyManager))
-<a class="jxr_linenumber" name="L415" href="#L415">415</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L416" href="#L416">416</a>                 .hasMessage(<span class="jxr_string">"KeyManager should be an instance of: [nl.altindag.ssl.keymanager.CompositeX509ExtendedKeyManager], "</span> +
-<a class="jxr_linenumber" name="L417" href="#L417">417</a>                         <span class="jxr_string">"but received: [sun.security.ssl.SunX509KeyManagerImpl]"</span>);
-<a class="jxr_linenumber" name="L418" href="#L418">418</a>     }
-<a class="jxr_linenumber" name="L419" href="#L419">419</a> 
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> }
+<a class="jxr_linenumber" name="L379" href="#L379">379</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, keyPassword, keyManagerFactoryAlgorithm))
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>);
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>     }
+<a class="jxr_linenumber" name="L382" href="#L382">382</a> 
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>     @Test
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerWithInvalidAlgorithm() {
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD, <span class="jxr_string">"NONE"</span>))
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L389" href="#L389">389</a>                 .hasMessage(<span class="jxr_string">"java.security.NoSuchAlgorithmException: NONE KeyManagerFactory not available"</span>);
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>     }
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> 
+<a class="jxr_linenumber" name="L392" href="#L392">392</a>     @Test
+<a class="jxr_linenumber" name="L393" href="#L393">393</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenCreatingKeyManagerWithInvalidSecurityProviderName() {
+<a class="jxr_linenumber" name="L394" href="#L394">394</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L395" href="#L395">395</a>         String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+<a class="jxr_linenumber" name="L396" href="#L396">396</a> 
+<a class="jxr_linenumber" name="L397" href="#L397">397</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD, keyManagerFactoryAlgorithm, <span class="jxr_string">"test"</span>))
+<a class="jxr_linenumber" name="L398" href="#L398">398</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L399" href="#L399">399</a>                 .hasMessage(<span class="jxr_string">"java.security.NoSuchProviderException: no such provider: test"</span>);
+<a class="jxr_linenumber" name="L400" href="#L400">400</a>     }
+<a class="jxr_linenumber" name="L401" href="#L401">401</a> 
+<a class="jxr_linenumber" name="L402" href="#L402">402</a>     @Test
+<a class="jxr_linenumber" name="L403" href="#L403">403</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenInvalidSecurityProviderIsProvidedForTheKeyManagerFactoryAlgorithm() {
+<a class="jxr_linenumber" name="L404" href="#L404">404</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L405" href="#L405">405</a>         String keyManagerFactoryAlgorithm = KeyManagerFactory.getDefaultAlgorithm();
+<a class="jxr_linenumber" name="L406" href="#L406">406</a>         Provider sunSecurityProvider = Security.getProvider(<span class="jxr_string">"SUN"</span>);
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> 
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD, keyManagerFactoryAlgorithm, sunSecurityProvider))
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>                 .hasMessage(<span class="jxr_string">"java.security.NoSuchAlgorithmException: no such algorithm: SunX509 for provider SUN"</span>);
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>     }
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> 
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>     @Test
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenSwappingKeyManager() {
+<a class="jxr_linenumber" name="L415" href="#L415">415</a>         KeyStore identityOne = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>         KeyStore identityTwo = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_TWO_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> 
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>         X509ExtendedKeyManager keyManagerOne = KeyManagerUtils.createKeyManager(identityOne, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>         X509ExtendedKeyManager keyManagerTwo = KeyManagerUtils.createKeyManager(identityTwo, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> 
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.swapKeyManager(keyManagerOne, keyManagerTwo))
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>                 .hasMessage(<span class="jxr_string">"The baseKeyManager is from the instance of [sun.security.ssl.SunX509KeyManagerImpl] "</span> +
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>                         <span class="jxr_string">"and should be an instance of [nl.altindag.ssl.keymanager.HotSwappableX509ExtendedKeyManager]."</span>);
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>     }
+<a class="jxr_linenumber" name="L426" href="#L426">426</a> 
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>     @Test
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenSwappingKeyManagerWithANewKeyManager() {
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>         KeyStore identityOne = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>         KeyStore identityTwo = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_TWO_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> 
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>         X509ExtendedKeyManager baseKeyManager = KeyManagerUtils.createSwappableKeyManager(KeyManagerUtils.createKeyManager(identityOne, IDENTITY_PASSWORD));
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>         X509ExtendedKeyManager newKeyManager = KeyManagerUtils.createSwappableKeyManager(KeyManagerUtils.createKeyManager(identityTwo, IDENTITY_PASSWORD));
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> 
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.swapKeyManager(baseKeyManager, newKeyManager))
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>                 .hasMessage(<span class="jxr_string">"The newKeyManager should not be an instance of [nl.altindag.ssl.keymanager.HotSwappableX509ExtendedKeyManager]"</span>);
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>     }
+<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>     @Test
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenAddingNewClientIdentityRoute() {
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>         X509ExtendedKeyManager keyManager = KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L444" href="#L444">444</a> 
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.addClientIdentityRoute(keyManager, <span class="jxr_string">"another-server"</span>, <span class="jxr_string">"https://localhost:8443/"</span>))
+<a class="jxr_linenumber" name="L446" href="#L446">446</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>                 .hasMessage(<span class="jxr_string">"KeyManager should be an instance of: [nl.altindag.ssl.keymanager.CompositeX509ExtendedKeyManager], "</span> +
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>                             <span class="jxr_string">"but received: [sun.security.ssl.SunX509KeyManagerImpl]"</span>);
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>     }
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> 
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>     @Test
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>     <strong class="jxr_keyword">void</strong> throwExceptionWhenUnsupportedKeyManagerIsProvidedWhenGettingClientIdentityRoute() {
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         KeyStore identity = KeyStoreUtils.loadKeyStore(KEYSTORE_LOCATION + IDENTITY_FILE_NAME, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         X509ExtendedKeyManager keyManager = KeyManagerUtils.createKeyManager(identity, IDENTITY_PASSWORD);
+<a class="jxr_linenumber" name="L455" href="#L455">455</a> 
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         assertThatThrownBy(() -&gt; KeyManagerUtils.getClientIdentityRoute(keyManager))
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>                 .isInstanceOf(GenericKeyManagerException.<strong class="jxr_keyword">class</strong>)
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>                 .hasMessage(<span class="jxr_string">"KeyManager should be an instance of: [nl.altindag.ssl.keymanager.CompositeX509ExtendedKeyManager], "</span> +
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>                         <span class="jxr_string">"but received: [sun.security.ssl.SunX509KeyManagerImpl]"</span>);
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>     }
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> 
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021. All rights reserved.</div>

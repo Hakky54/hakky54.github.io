@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SSLSessionUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">sslcontext-kickstart</a> &gt; <a href="index.source.html" class="el_package">nl.altindag.ssl.util</a> &gt; <span class="el_source">SSLSessionUtils.java</span></div><h1>SSLSessionUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2019-2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package nl.altindag.ssl.util;
+
+import nl.altindag.ssl.SSLFactory;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSessionContext;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+/**
+ * @author Hakan Altindag
+ */
+public final class SSLSessionUtils {
+
+    private SSLSessionUtils() {}
+
+    public static void invalidateCaches(SSLFactory sslFactory) {
+<span class="fc" id="L41">        invalidateServerCaches(sslFactory);</span>
+<span class="fc" id="L42">        invalidateClientCaches(sslFactory);</span>
+<span class="fc" id="L43">    }</span>
+
+    public static void invalidateServerCaches(SSLFactory sslFactory) {
+<span class="fc" id="L46">        invalidateServerCaches(sslFactory.getSslContext());</span>
+<span class="fc" id="L47">    }</span>
+
+    public static void invalidateClientCaches(SSLFactory sslFactory) {
+<span class="fc" id="L50">        invalidateClientCaches(sslFactory.getSslContext());</span>
+<span class="fc" id="L51">    }</span>
+
+    public static void invalidateCaches(SSLContext sslContext) {
+<span class="fc" id="L54">        invalidateServerCaches(sslContext);</span>
+<span class="fc" id="L55">        invalidateClientCaches(sslContext);</span>
+<span class="fc" id="L56">    }</span>
+
+    public static void invalidateServerCaches(SSLContext sslContext) {
+<span class="fc" id="L59">        invalidateCaches(sslContext.getServerSessionContext());</span>
+<span class="fc" id="L60">    }</span>
+
+    public static void invalidateClientCaches(SSLContext sslContext) {
+<span class="fc" id="L63">        invalidateCaches(sslContext.getClientSessionContext());</span>
+<span class="fc" id="L64">    }</span>
+
+    public static void invalidateCaches(SSLSessionContext sslSessionContext) {
+<span class="fc" id="L67">        SSLSessionUtils.getSslSessions(sslSessionContext).forEach(SSLSession::invalidate);</span>
+<span class="fc" id="L68">    }</span>
+
+    public static void invalidateCachesBefore(SSLFactory sslFactory, ZonedDateTime upperBoundary) {
+<span class="fc" id="L71">        invalidateCachesBefore(sslFactory.getSslContext(), upperBoundary);</span>
+<span class="fc" id="L72">    }</span>
+
+    public static void invalidateCachesBefore(SSLContext sslContext, ZonedDateTime upperBoundary) {
+<span class="fc" id="L75">        invalidateCachesBefore(sslContext.getServerSessionContext(), upperBoundary);</span>
+<span class="fc" id="L76">        invalidateCachesBefore(sslContext.getClientSessionContext(), upperBoundary);</span>
+<span class="fc" id="L77">    }</span>
+
+    public static void invalidateCachesBefore(SSLSessionContext sslSessionContext, ZonedDateTime upperBoundary) {
+<span class="fc" id="L80">        invalidateCachesWithTimeStamp(sslSessionContext, sslSessionCreationTime -&gt; sslSessionCreationTime.isBefore(upperBoundary));</span>
+<span class="fc" id="L81">    }</span>
+
+    public static void invalidateCachesAfter(SSLFactory sslFactory, ZonedDateTime lowerBoundary) {
+<span class="fc" id="L84">        invalidateCachesAfter(sslFactory.getSslContext(), lowerBoundary);</span>
+<span class="fc" id="L85">    }</span>
+
+    public static void invalidateCachesAfter(SSLContext sslContext, ZonedDateTime lowerBoundary) {
+<span class="fc" id="L88">        invalidateCachesAfter(sslContext.getServerSessionContext(), lowerBoundary);</span>
+<span class="fc" id="L89">        invalidateCachesAfter(sslContext.getClientSessionContext(), lowerBoundary);</span>
+<span class="fc" id="L90">    }</span>
+
+    public static void invalidateCachesAfter(SSLSessionContext sslSessionContext, ZonedDateTime lowerBoundary) {
+<span class="fc" id="L93">        invalidateCachesWithTimeStamp(sslSessionContext, sslSessionCreationTime -&gt; sslSessionCreationTime.isAfter(lowerBoundary));</span>
+<span class="fc" id="L94">    }</span>
+
+    public static void invalidateCachesBetween(SSLFactory sslFactory, ZonedDateTime lowerBoundary, ZonedDateTime upperBoundary) {
+<span class="fc" id="L97">        invalidateCachesBetween(sslFactory.getSslContext(), lowerBoundary, upperBoundary);</span>
+<span class="fc" id="L98">    }</span>
+
+    public static void invalidateCachesBetween(SSLContext sslContext, ZonedDateTime lowerBoundary, ZonedDateTime upperBoundary) {
+<span class="fc" id="L101">        invalidateCachesBetween(sslContext.getServerSessionContext(), lowerBoundary, upperBoundary);</span>
+<span class="fc" id="L102">        invalidateCachesBetween(sslContext.getClientSessionContext(), lowerBoundary, upperBoundary);</span>
+<span class="fc" id="L103">    }</span>
+
+    public static void invalidateCachesBetween(SSLSessionContext sslSessionContext, ZonedDateTime lowerBoundary, ZonedDateTime upperBoundary) {
+<span class="fc" id="L106">        Predicate&lt;ZonedDateTime&gt; isAfterLowerBoundary = sslSessionCreationTime -&gt; sslSessionCreationTime.isAfter(lowerBoundary);</span>
+<span class="fc" id="L107">        Predicate&lt;ZonedDateTime&gt; isBeforeUpperBoundary = sslSessionCreationTime -&gt; sslSessionCreationTime.isBefore(upperBoundary);</span>
+
+<span class="fc" id="L109">        invalidateCachesWithTimeStamp(sslSessionContext, isAfterLowerBoundary.and(isBeforeUpperBoundary));</span>
+<span class="fc" id="L110">    }</span>
+
+    private static void invalidateCachesWithTimeStamp(SSLSessionContext sslSessionContext, Predicate&lt;ZonedDateTime&gt; timeStampPredicate) {
+<span class="fc" id="L113">        SSLSessionUtils.getSslSessions(sslSessionContext).stream()</span>
+<span class="fc" id="L114">                .filter(sslSession -&gt; {</span>
+<span class="fc" id="L115">                    ZonedDateTime sslSessionCreationTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(sslSession.getCreationTime()), ZoneOffset.UTC);</span>
+<span class="fc" id="L116">                    return timeStampPredicate.test(sslSessionCreationTime);</span>
+                })
+<span class="fc" id="L118">                .forEach(SSLSession::invalidate);</span>
+<span class="fc" id="L119">    }</span>
+
+    public static void updateSessionTimeout(SSLFactory sslFactory, int timeoutInSeconds) {
+<span class="fc" id="L122">        updateSessionTimeout(sslFactory.getSslContext(), timeoutInSeconds);</span>
+<span class="fc" id="L123">    }</span>
+
+    public static void updateSessionTimeout(SSLContext sslContext, int timeoutInSeconds) {
+<span class="fc" id="L126">        validateSessionTimeout(timeoutInSeconds);</span>
+
+<span class="fc" id="L128">        sslContext.getClientSessionContext().setSessionTimeout(timeoutInSeconds);</span>
+<span class="fc" id="L129">        sslContext.getServerSessionContext().setSessionTimeout(timeoutInSeconds);</span>
+<span class="fc" id="L130">    }</span>
+
+    public static void updateSessionCacheSize(SSLFactory sslFactory, int cacheSizeInBytes) {
+<span class="fc" id="L133">        updateSessionCacheSize(sslFactory.getSslContext(), cacheSizeInBytes);</span>
+<span class="fc" id="L134">    }</span>
+
+    public static void updateSessionCacheSize(SSLContext sslContext, int cacheSizeInBytes) {
+<span class="fc" id="L137">        validateSessionCacheSize(cacheSizeInBytes);</span>
+
+<span class="fc" id="L139">        sslContext.getClientSessionContext().setSessionCacheSize(cacheSizeInBytes);</span>
+<span class="fc" id="L140">        sslContext.getServerSessionContext().setSessionCacheSize(cacheSizeInBytes);</span>
+<span class="fc" id="L141">    }</span>
+
+    public static void validateSessionTimeout(int timeoutInSeconds) {
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (timeoutInSeconds &lt; 0) {</span>
+<span class="fc" id="L145">            throw new IllegalArgumentException(String.format(</span>
+                    &quot;Unsupported timeout has been provided. Timeout should be equal or greater than [%d], but received [%d]&quot;,
+<span class="fc" id="L147">                    0, timeoutInSeconds));</span>
+        }
+<span class="fc" id="L149">    }</span>
+
+    public static void validateSessionCacheSize(int cacheSizeInBytes) {
+<span class="fc bfc" id="L152" title="All 2 branches covered.">        if (cacheSizeInBytes &lt; 0) {</span>
+<span class="fc" id="L153">            throw new IllegalArgumentException(String.format(</span>
+                    &quot;Unsupported cache size has been provided. Cache size should be equal or greater than [%d], but received [%d]&quot;,
+<span class="fc" id="L155">                    0, cacheSizeInBytes));</span>
+        }
+<span class="fc" id="L157">    }</span>
+
+    public static List&lt;SSLSession&gt; getServerSslSessions(SSLFactory sslFactory) {
+<span class="fc" id="L160">        return getServerSslSessions(sslFactory.getSslContext());</span>
+    }
+
+    public static List&lt;SSLSession&gt; getServerSslSessions(SSLContext sslContext) {
+<span class="fc" id="L164">        return getSslSessions(sslContext.getServerSessionContext());</span>
+    }
+
+    public static List&lt;SSLSession&gt; getClientSslSessions(SSLFactory sslFactory) {
+<span class="fc" id="L168">        return getClientSslSessions(sslFactory.getSslContext());</span>
+    }
+
+    public static List&lt;SSLSession&gt; getClientSslSessions(SSLContext sslContext) {
+<span class="fc" id="L172">        return getSslSessions(sslContext.getClientSessionContext());</span>
+    }
+
+    public static List&lt;SSLSession&gt; getSslSessions(SSLSessionContext sslSessionContext) {
+<span class="fc" id="L176">        return Collections.list(sslSessionContext.getIds()).stream()</span>
+<span class="fc" id="L177">                .map(sslSessionContext::getSession)</span>
+<span class="fc" id="L178">                .filter(Objects::nonNull)</span>
+<span class="fc" id="L179">                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -81,44 +81,43 @@ public final class CertificateUtils {
 <span class="fc" id="L81">        return loadCertificate(Function.identity(), certificateStreams);</span>
     }
 
-    @SafeVarargs
-    private static &lt;T&gt; List&lt;Certificate&gt; loadCertificate(Function&lt;T, InputStream&gt; resourceMapper, T... resources) {
-<span class="fc" id="L86">        List&lt;Certificate&gt; certificates = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        for (T resource : resources) {</span>
-<span class="fc" id="L88">            try (InputStream certificateStream = resourceMapper.apply(resource)) {</span>
-<span class="fc" id="L89">                certificates.addAll(parseCertificate(certificateStream));</span>
-<span class="fc" id="L90">            } catch (Exception e) {</span>
-<span class="fc" id="L91">                throw new GenericIOException(e);</span>
-<span class="fc" id="L92">            }</span>
+    private static &lt;T&gt; List&lt;Certificate&gt; loadCertificate(Function&lt;T, InputStream&gt; resourceMapper, T[] resources) {
+<span class="fc" id="L85">        List&lt;Certificate&gt; certificates = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        for (T resource : resources) {</span>
+<span class="fc" id="L87">            try (InputStream certificateStream = resourceMapper.apply(resource)) {</span>
+<span class="fc" id="L88">                certificates.addAll(parseCertificate(certificateStream));</span>
+<span class="fc" id="L89">            } catch (Exception e) {</span>
+<span class="fc" id="L90">                throw new GenericIOException(e);</span>
+<span class="fc" id="L91">            }</span>
         }
 
-<span class="fc" id="L95">        return Collections.unmodifiableList(certificates);</span>
+<span class="fc" id="L94">        return Collections.unmodifiableList(certificates);</span>
     }
 
     private static List&lt;Certificate&gt; parseCertificate(InputStream certificateStream) {
-<span class="fc" id="L99">        String content = IOUtils.getContent(certificateStream);</span>
-<span class="fc" id="L100">        return parseCertificate(content);</span>
+<span class="fc" id="L98">        String content = IOUtils.getContent(certificateStream);</span>
+<span class="fc" id="L99">        return parseCertificate(content);</span>
     }
 
     public static List&lt;Certificate&gt; parseCertificate(String certificateContent) {
-<span class="fc" id="L104">        List&lt;Certificate&gt; certificates = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L105">        Matcher certificateMatcher = CERTIFICATE_PATTERN.matcher(certificateContent);</span>
+<span class="fc" id="L103">        List&lt;Certificate&gt; certificates = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L104">        Matcher certificateMatcher = CERTIFICATE_PATTERN.matcher(certificateContent);</span>
 
-<span class="fc bfc" id="L107" title="All 2 branches covered.">        while (certificateMatcher.find()) {</span>
-<span class="fc" id="L108">            String sanitizedCertificate = certificateMatcher.group(1).replace(System.lineSeparator(), EMPTY).trim();</span>
-<span class="fc" id="L109">            byte[] decodedCertificate = Base64.getDecoder().decode(sanitizedCertificate);</span>
-<span class="fc" id="L110">            try(ByteArrayInputStream certificateAsInputStream = new ByteArrayInputStream(decodedCertificate)) {</span>
-<span class="fc" id="L111">                CertificateFactory certificateFactory = CertificateFactory.getInstance(CERTIFICATE_TYPE);</span>
-<span class="fc" id="L112">                Certificate certificate = certificateFactory.generateCertificate(certificateAsInputStream);</span>
-<span class="fc" id="L113">                certificates.add(certificate);</span>
-<span class="fc" id="L114">            } catch (IOException | CertificateException e) {</span>
-<span class="fc" id="L115">                throw new GenericCertificateException(e);</span>
-<span class="fc" id="L116">            }</span>
-<span class="fc" id="L117">        }</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">        while (certificateMatcher.find()) {</span>
+<span class="fc" id="L107">            String sanitizedCertificate = certificateMatcher.group(1).replace(System.lineSeparator(), EMPTY).trim();</span>
+<span class="fc" id="L108">            byte[] decodedCertificate = Base64.getDecoder().decode(sanitizedCertificate);</span>
+<span class="fc" id="L109">            try(ByteArrayInputStream certificateAsInputStream = new ByteArrayInputStream(decodedCertificate)) {</span>
+<span class="fc" id="L110">                CertificateFactory certificateFactory = CertificateFactory.getInstance(CERTIFICATE_TYPE);</span>
+<span class="fc" id="L111">                Certificate certificate = certificateFactory.generateCertificate(certificateAsInputStream);</span>
+<span class="fc" id="L112">                certificates.add(certificate);</span>
+<span class="fc" id="L113">            } catch (IOException | CertificateException e) {</span>
+<span class="fc" id="L114">                throw new GenericCertificateException(e);</span>
+<span class="fc" id="L115">            }</span>
+<span class="fc" id="L116">        }</span>
 
-<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (certificates.isEmpty()) {</span>
-<span class="fc" id="L120">            throw new GenericCertificateException(</span>
-<span class="fc" id="L121">                    String.format(</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">        if (certificates.isEmpty()) {</span>
+<span class="fc" id="L119">            throw new GenericCertificateException(</span>
+<span class="fc" id="L120">                    String.format(</span>
                         &quot;There are no valid certificates present to parse. &quot; +
                         &quot;Please make sure to supply at least one valid pem formatted certificate containing the header %s and the footer %s&quot;,
                         &quot;-----BEGIN CERTIFICATE-----&quot;,
@@ -127,23 +126,23 @@ public final class CertificateUtils {
             );
         }
 
-<span class="fc" id="L130">        return certificates;</span>
+<span class="fc" id="L129">        return certificates;</span>
     }
 
     public static List&lt;Certificate&gt; getSystemTrustedCertificates() {
         try {
-<span class="fc" id="L135">            List&lt;Certificate&gt; certificates = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L136" title="All 2 branches covered.">            for (KeyStore keyStore : KeyStoreUtils.loadSystemKeyStores()) {</span>
-<span class="fc bfc" id="L137" title="All 2 branches covered.">                for (String alias : Collections.list(keyStore.aliases())) {</span>
-<span class="fc bfc" id="L138" title="All 2 branches covered.">                    if (keyStore.isCertificateEntry(alias)) {</span>
-<span class="fc" id="L139">                        Certificate certificate = keyStore.getCertificate(alias);</span>
-<span class="fc" id="L140">                        certificates.add(certificate);</span>
+<span class="fc" id="L134">            List&lt;Certificate&gt; certificates = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">            for (KeyStore keyStore : KeyStoreUtils.loadSystemKeyStores()) {</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                for (String alias : Collections.list(keyStore.aliases())) {</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">                    if (keyStore.isCertificateEntry(alias)) {</span>
+<span class="fc" id="L138">                        Certificate certificate = keyStore.getCertificate(alias);</span>
+<span class="fc" id="L139">                        certificates.add(certificate);</span>
                     }
-<span class="fc" id="L142">                }</span>
-<span class="fc" id="L143">            }</span>
-<span class="fc" id="L144">            return certificates;</span>
-<span class="fc" id="L145">        } catch (KeyStoreException e) {</span>
-<span class="fc" id="L146">            throw new GenericCertificateException(e);</span>
+<span class="fc" id="L141">                }</span>
+<span class="fc" id="L142">            }</span>
+<span class="fc" id="L143">            return certificates;</span>
+<span class="fc" id="L144">        } catch (KeyStoreException e) {</span>
+<span class="fc" id="L145">            throw new GenericCertificateException(e);</span>
         }
     }
 
