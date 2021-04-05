@@ -92,9 +92,9 @@ public final class SSLContextUtils {
             String securityProviderName,
             Provider securityProvider) {
 
-<span class="fc" id="L95">        return createSslContext(</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">        return createSslContext(</span>
 <span class="fc bfc" id="L96" title="All 2 branches covered.">                keyManager != null ? KeyManagerUtils.toArray(keyManager) : null,</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">                trustManager != null ? TrustManagerUtils.toArray(trustManager) : null,</span>
+<span class="fc" id="L97">                trustManager != null ? TrustManagerUtils.toArray(trustManager) : null,</span>
                 secureRandom,
                 sslContextAlgorithm,
                 securityProviderName,
