@@ -65,12 +65,12 @@ public final class CompositeX509ExtendedTrustManager extends X509ExtendedTrustMa
     private static final String CLIENT_CERTIFICATE_LOG_MESSAGE = &quot;Received the following client certificate: [{}]&quot;;
     private static final String SERVER_CERTIFICATE_LOG_MESSAGE = &quot;Received the following server certificate: [{}]&quot;;
 
-    private final List&lt;? extends X509ExtendedTrustManager&gt; trustManagers;
+    private final List&lt;X509ExtendedTrustManager&gt; trustManagers;
     private final X509Certificate[] acceptedIssuers;
 
 <span class="fc" id="L71">    public CompositeX509ExtendedTrustManager(List&lt;? extends X509ExtendedTrustManager&gt; trustManagers) {</span>
 <span class="fc" id="L72">        this.trustManagers = Collections.unmodifiableList(trustManagers);</span>
-<span class="fc" id="L73">        acceptedIssuers = trustManagers.stream()</span>
+<span class="fc" id="L73">        this.acceptedIssuers = this.trustManagers.stream()</span>
 <span class="fc" id="L74">                .map(X509ExtendedTrustManager::getAcceptedIssuers)</span>
 <span class="fc" id="L75">                .flatMap(Arrays::stream)</span>
 <span class="fc" id="L76">                .distinct()</span>
@@ -141,7 +141,7 @@ public final class CompositeX509ExtendedTrustManager extends X509ExtendedTrustMa
     }
 
     public List&lt;X509ExtendedTrustManager&gt; getTrustManagers() {
-<span class="fc" id="L144">        return Collections.unmodifiableList(trustManagers);</span>
+<span class="fc" id="L144">        return trustManagers;</span>
     }
 
     private void checkTrusted(TrustManagerConsumer callBackConsumer) throws CertificateException {

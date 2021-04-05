@@ -145,7 +145,7 @@ public final class CompositeX509ExtendedKeyManager extends X509ExtendedKeyManage
     private Optional&lt;String&gt; getPreferredClientAlias(String peerHost, int peerPort) {
 <span class="fc" id="L146">        return preferredClientAliasToHost.entrySet().stream()</span>
 <span class="fc" id="L147">                .filter(entry -&gt; entry.getValue().stream().anyMatch(uri -&gt; uri.getHost().equals(peerHost)))</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">                .filter(entry -&gt; entry.getValue().stream().anyMatch(uri -&gt; uri.getPort() == peerPort))</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">                .filter(entry -&gt; entry.getValue().stream().anyMatch(uri -&gt; uri.getPort() == peerPort))</span>
 <span class="fc" id="L149">                .findFirst()</span>
 <span class="fc" id="L150">                .map(Map.Entry::getKey);</span>
     }

@@ -12,7 +12,7 @@ sslcontext-kickstart,nl.altindag.ssl.util,TrustManagerUtils.TrustManagerBuilder,
 sslcontext-kickstart,nl.altindag.ssl.util,SSLContextUtils,0,103,0,16,0,20,0,14,0,6
 sslcontext-kickstart,nl.altindag.ssl.util,KeyStoreUtils,0,271,0,14,0,65,0,25,0,18
 sslcontext-kickstart,nl.altindag.ssl.util,KeyManagerUtils.KeyManagerBuilder,0,164,0,12,0,37,0,18,0,12
-sslcontext-kickstart,nl.altindag.ssl.util,CertificateUtils,0,210,0,14,0,50,0,18,0,11
+sslcontext-kickstart,nl.altindag.ssl.util,CertificateUtils,70,303,1,19,15,74,5,24,4,15
 sslcontext-kickstart,nl.altindag.ssl.util,SSLSocketUtils,0,26,0,0,0,4,0,4,0,4
 sslcontext-kickstart,nl.altindag.ssl.util,SSLParametersUtils,0,82,0,12,0,22,0,8,0,2
 sslcontext-kickstart,nl.altindag.ssl.util,IOUtils,0,28,0,0,0,6,0,1,0,1
@@ -35,12 +35,12 @@ sslcontext-kickstart,nl.altindag.ssl.trustmanager,TrustManagerFactorySpiWrapper,
 sslcontext-kickstart,nl.altindag.ssl.trustmanager,DelegatingX509ExtendedTrustManager,0,30,0,0,0,9,0,4,0,4
 sslcontext-kickstart,nl.altindag.ssl.trustmanager,HotSwappableX509ExtendedTrustManager,0,42,0,0,0,12,0,6,0,6
 sslcontext-kickstart,nl.altindag.ssl.trustmanager,CompositeX509ExtendedTrustManager,0,215,0,14,0,46,0,26,0,19
-sslcontext-kickstart,nl.altindag.ssl.trustmanager,UnsafeX509ExtendedTrustManager,0,81,0,12,0,23,0,15,0,9
+sslcontext-kickstart,nl.altindag.ssl.trustmanager,UnsafeX509ExtendedTrustManager,0,72,0,0,0,25,0,12,0,12
 sslcontext-kickstart,nl.altindag.ssl,SSLFactory.Builder,36,828,0,56,8,198,3,88,3,60
 sslcontext-kickstart,nl.altindag.ssl,SSLFactory,0,129,0,4,0,29,0,22,0,20
 sslcontext-kickstart,nl.altindag.ssl.keymanager,KeyManagerFactorySpiWrapper,0,29,0,0,0,10,0,5,0,5
 sslcontext-kickstart,nl.altindag.ssl.keymanager,X509KeyManagerWrapper,0,32,0,0,0,6,0,5,0,5
-sslcontext-kickstart,nl.altindag.ssl.keymanager,CompositeX509ExtendedKeyManager,0,359,0,52,0,76,0,47,0,21
+sslcontext-kickstart,nl.altindag.ssl.keymanager,CompositeX509ExtendedKeyManager,1,358,1,51,0,76,1,46,0,21
 sslcontext-kickstart,nl.altindag.ssl.keymanager,KeyManagerFactoryWrapper,0,17,0,0,0,3,0,2,0,2
 sslcontext-kickstart,nl.altindag.ssl.keymanager,KeyManagerFactoryWrapper.new Provider() {...},0,6,0,0,0,1,0,1,0,1
 sslcontext-kickstart,nl.altindag.ssl.keymanager,HotSwappableX509ExtendedKeyManager,0,42,0,0,0,8,0,6,0,6

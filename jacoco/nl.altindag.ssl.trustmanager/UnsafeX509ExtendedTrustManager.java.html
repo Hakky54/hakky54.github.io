@@ -22,7 +22,10 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.X509ExtendedTrustManager;
 import java.net.Socket;
+import java.security.Principal;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * An insecure {@link UnsafeX509ExtendedTrustManager TrustManager} that trusts all X.509 certificates without any verification.
@@ -49,63 +52,67 @@ import java.security.cert.X509Certificate;
 @SuppressWarnings(&quot;java:S4830&quot;)
 public final class UnsafeX509ExtendedTrustManager extends X509ExtendedTrustManager {
 
-<span class="fc" id="L52">    private static final X509ExtendedTrustManager INSTANCE = new UnsafeX509ExtendedTrustManager();</span>
-<span class="fc" id="L53">    private static final Logger LOGGER = LoggerFactory.getLogger(UnsafeX509ExtendedTrustManager.class);</span>
-<span class="fc" id="L54">    private static final X509Certificate[] EMPTY_X509_CERTIFICATES = new X509Certificate[0];</span>
-    private static final String CLIENT_CERTIFICATE_LOG_MESSAGE = &quot;Accepting a client certificate: [{}]&quot;;
-    private static final String SERVER_CERTIFICATE_LOG_MESSAGE = &quot;Accepting a server certificate: [{}]&quot;;
+<span class="fc" id="L55">    private static final Logger LOGGER = LoggerFactory.getLogger(UnsafeX509ExtendedTrustManager.class);</span>
+
+<span class="fc" id="L57">    private static final X509ExtendedTrustManager INSTANCE = new UnsafeX509ExtendedTrustManager();</span>
+
+    private static final String SERVER = &quot;server&quot;;
+    private static final String CLIENT = &quot;client&quot;;
+    private static final String CERTIFICATE_LOG_MESSAGE = &quot;Accepting the following {} certificates without validating: {}&quot;;
+<span class="fc" id="L62">    private static final X509Certificate[] EMPTY_CERTIFICATES = new X509Certificate[0];</span>
 
     private UnsafeX509ExtendedTrustManager() {}
 
     public static X509ExtendedTrustManager getInstance() {
-<span class="fc" id="L61">        return INSTANCE;</span>
+<span class="fc" id="L67">        return INSTANCE;</span>
     }
 
     @Override
-    public void checkClientTrusted(X509Certificate[] x509Certificates, String authType) {
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L67">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
-        }
-<span class="fc" id="L69">    }</span>
+    public void checkClientTrusted(X509Certificate[] certificates, String authType) {
+<span class="fc" id="L72">        logCertificate(certificates, CLIENT);</span>
+<span class="fc" id="L73">    }</span>
 
     @Override
-    public void checkClientTrusted(X509Certificate[] x509Certificates, String authType, Socket socket) {
-<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L74">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
-        }
-<span class="fc" id="L76">    }</span>
+    public void checkClientTrusted(X509Certificate[] certificates, String authType, Socket socket) {
+<span class="fc" id="L77">        logCertificate(certificates, CLIENT);</span>
+<span class="fc" id="L78">    }</span>
 
     @Override
-    public void checkClientTrusted(X509Certificate[] x509Certificates, String authType, SSLEngine sslEngine) {
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L81">            LOGGER.debug(CLIENT_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
-        }
+    public void checkClientTrusted(X509Certificate[] certificates, String authType, SSLEngine sslEngine) {
+<span class="fc" id="L82">        logCertificate(certificates, CLIENT);</span>
 <span class="fc" id="L83">    }</span>
 
     @Override
-    public void checkServerTrusted(X509Certificate[] x509Certificates, String authType) {
-<span class="fc bfc" id="L87" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L88">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
-        }
-<span class="fc" id="L90">    }</span>
+    public void checkServerTrusted(X509Certificate[] certificates, String authType) {
+<span class="fc" id="L87">        logCertificate(certificates, SERVER);</span>
+<span class="fc" id="L88">    }</span>
 
     @Override
-    public void checkServerTrusted(X509Certificate[] x509Certificates, String authType, Socket socket) {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L95">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
-        }
-<span class="fc" id="L97">    }</span>
+    public void checkServerTrusted(X509Certificate[] certificates, String authType, Socket socket) {
+<span class="fc" id="L92">        logCertificate(certificates, SERVER);</span>
+<span class="fc" id="L93">    }</span>
 
     @Override
-    public void checkServerTrusted(X509Certificate[] x509Certificates, String authType, SSLEngine sslEngine) {
-<span class="fc bfc" id="L101" title="All 2 branches covered.">        if (LOGGER.isDebugEnabled()) {</span>
-<span class="fc" id="L102">            LOGGER.debug(SERVER_CERTIFICATE_LOG_MESSAGE, x509Certificates[0].getSubjectDN());</span>
-        }
-<span class="fc" id="L104">    }</span>
+    public void checkServerTrusted(X509Certificate[] certificates, String authType, SSLEngine sslEngine) {
+<span class="fc" id="L97">        logCertificate(certificates, SERVER);</span>
+<span class="fc" id="L98">    }</span>
+
+    private static void logCertificate(X509Certificate[] certificates, String serverOrClient) {
+<span class="fc" id="L101">        String principals = extractPrincipals(certificates);</span>
+<span class="fc" id="L102">        LOGGER.warn(CERTIFICATE_LOG_MESSAGE, serverOrClient, principals);</span>
+<span class="fc" id="L103">    }</span>
+
+    private static String extractPrincipals(X509Certificate[] certificates) {
+<span class="fc" id="L106">        return Arrays.stream(certificates)</span>
+<span class="fc" id="L107">                .map(X509Certificate::getSubjectX500Principal)</span>
+<span class="fc" id="L108">                .map(Principal::toString)</span>
+<span class="fc" id="L109">                .map(principal -&gt; String.format(&quot;{%s}&quot;, principal))</span>
+<span class="fc" id="L110">                .collect(Collectors.joining(&quot;,&quot;, &quot;[&quot;, &quot;]&quot;));</span>
+    }
 
     @Override
     public X509Certificate[] getAcceptedIssuers() {
-<span class="fc" id="L108">        return EMPTY_X509_CERTIFICATES;</span>
+<span class="fc" id="L115">        return EMPTY_CERTIFICATES;</span>
     }
 
 }

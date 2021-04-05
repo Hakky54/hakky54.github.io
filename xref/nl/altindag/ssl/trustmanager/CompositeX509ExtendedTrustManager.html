@@ -73,12 +73,12 @@
 <a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String CLIENT_CERTIFICATE_LOG_MESSAGE = <span class="jxr_string">"Received the following client certificate: [{}]"</span>;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String SERVER_CERTIFICATE_LOG_MESSAGE = <span class="jxr_string">"Received the following server certificate: [{}]"</span>;
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  
-<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;? <strong class="jxr_keyword">extends</strong> X509ExtendedTrustManager&gt; trustManagers;
+<a class="jxr_linenumber" name="L68" href="#L68">68</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> List&lt;X509ExtendedTrustManager&gt; trustManagers;
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> X509Certificate[] acceptedIssuers;
 <a class="jxr_linenumber" name="L70" href="#L70">70</a>  
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      <strong class="jxr_keyword">public</strong> <a name="CompositeX509ExtendedTrustManager" href="../../../../nl/altindag/ssl/trustmanager/CompositeX509ExtendedTrustManager.html#CompositeX509ExtendedTrustManager">CompositeX509ExtendedTrustManager</a>(List&lt;? <strong class="jxr_keyword">extends</strong> X509ExtendedTrustManager&gt; trustManagers) {
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>          <strong class="jxr_keyword">this</strong>.trustManagers = Collections.unmodifiableList(trustManagers);
-<a class="jxr_linenumber" name="L73" href="#L73">73</a>          acceptedIssuers = trustManagers.stream()
+<a class="jxr_linenumber" name="L73" href="#L73">73</a>          <strong class="jxr_keyword">this</strong>.acceptedIssuers = <strong class="jxr_keyword">this</strong>.trustManagers.stream()
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>                  .map(X509ExtendedTrustManager::getAcceptedIssuers)
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>                  .flatMap(Arrays::stream)
 <a class="jxr_linenumber" name="L76" href="#L76">76</a>                  .distinct()
@@ -149,7 +149,7 @@
 <a class="jxr_linenumber" name="L141" href="#L141">141</a>     }
 <a class="jxr_linenumber" name="L142" href="#L142">142</a> 
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>     <strong class="jxr_keyword">public</strong> List&lt;X509ExtendedTrustManager&gt; getTrustManagers() {
-<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">return</strong> Collections.unmodifiableList(trustManagers);
+<a class="jxr_linenumber" name="L144" href="#L144">144</a>         <strong class="jxr_keyword">return</strong> trustManagers;
 <a class="jxr_linenumber" name="L145" href="#L145">145</a>     }
 <a class="jxr_linenumber" name="L146" href="#L146">146</a> 
 <a class="jxr_linenumber" name="L147" href="#L147">147</a>     <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">void</strong> checkTrusted(TrustManagerConsumer callBackConsumer) <strong class="jxr_keyword">throws</strong> CertificateException {
