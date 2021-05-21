@@ -179,8 +179,8 @@ public final class TrustManagerUtils {
             );
         }
 
-<span class="pc bpc" id="L182" title="1 of 2 branches missed.">        if (baseTrustManager instanceof HotSwappableX509ExtendedTrustManager) {</span>
-<span class="nc" id="L183">            ((HotSwappableX509ExtendedTrustManager) baseTrustManager).setTrustManager(TrustManagerUtils.wrapIfNeeded(newTrustManager));</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">        if (baseTrustManager instanceof HotSwappableX509ExtendedTrustManager) {</span>
+<span class="fc" id="L183">            ((HotSwappableX509ExtendedTrustManager) baseTrustManager).setTrustManager(TrustManagerUtils.wrapIfNeeded(newTrustManager));</span>
         } else {
 <span class="fc" id="L185">            throw new GenericTrustManagerException(</span>
 <span class="fc" id="L186">                    String.format(&quot;The baseTrustManager is from the instance of [%s] and should be an instance of [%s].&quot;,</span>
@@ -188,7 +188,7 @@ public final class TrustManagerUtils {
 <span class="fc" id="L188">                            HotSwappableX509ExtendedTrustManager.class.getName())</span>
             );
         }
-<span class="nc" id="L191">    }</span>
+<span class="fc" id="L191">    }</span>
 
     private static List&lt;X509ExtendedTrustManager&gt; unwrapIfPossible(X509ExtendedTrustManager trustManager) {
 <span class="fc" id="L194">        List&lt;X509ExtendedTrustManager&gt; trustManagers = new ArrayList&lt;&gt;();</span>

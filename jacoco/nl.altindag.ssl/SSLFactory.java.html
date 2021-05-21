@@ -422,14 +422,14 @@ public final class SSLFactory {
         }
 
         public Builder withClientIdentityRoute(Map&lt;String, List&lt;String&gt;&gt; clientAliasesToHosts) {
-<span class="nc" id="L425">            clientAliasesToHosts.entrySet().stream()</span>
-<span class="nc" id="L426">                    .map(clientAliasToHosts -&gt; new AbstractMap.SimpleEntry&lt;&gt;(</span>
-<span class="nc" id="L427">                            clientAliasToHosts.getKey(),</span>
-<span class="nc" id="L428">                            clientAliasToHosts.getValue().stream()</span>
-<span class="nc" id="L429">                                    .map(URI::create)</span>
-<span class="nc" id="L430">                                    .collect(Collectors.toList())))</span>
-<span class="nc" id="L431">                    .forEach(clientAliasToHosts -&gt; withClientIdentityRoute(clientAliasToHosts.getKey(), clientAliasToHosts.getValue()));</span>
-<span class="nc" id="L432">            return this;</span>
+<span class="fc" id="L425">            clientAliasesToHosts.entrySet().stream()</span>
+<span class="fc" id="L426">                    .map(clientAliasToHosts -&gt; new AbstractMap.SimpleEntry&lt;&gt;(</span>
+<span class="fc" id="L427">                            clientAliasToHosts.getKey(),</span>
+<span class="fc" id="L428">                            clientAliasToHosts.getValue().stream()</span>
+<span class="fc" id="L429">                                    .map(URI::create)</span>
+<span class="fc" id="L430">                                    .collect(Collectors.toList())))</span>
+<span class="fc" id="L431">                    .forEach(clientAliasToHosts -&gt; withClientIdentityRoute(clientAliasToHosts.getKey(), clientAliasToHosts.getValue()));</span>
+<span class="fc" id="L432">            return this;</span>
         }
 
         private Builder withClientIdentityRoute(String clientAlias, List&lt;URI&gt; hosts) {
@@ -517,7 +517,7 @@ public final class SSLFactory {
         }
 
         public Builder withTrustingAllCertificatesWithoutValidation() {
-<span class="fc" id="L520">            LOGGER.warn(&quot;UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation. Please don't use this configuration at production.&quot;);</span>
+<span class="fc" id="L520">            LOGGER.warn(&quot;UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation.&quot;);</span>
 <span class="fc" id="L521">            trustManagers.add(TrustManagerUtils.createUnsafeTrustManager());</span>
 <span class="fc" id="L522">            return this;</span>
         }

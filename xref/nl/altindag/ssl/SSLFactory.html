@@ -243,7 +243,7 @@
 <a class="jxr_linenumber" name="L235" href="#L235">235</a>             }
 <a class="jxr_linenumber" name="L236" href="#L236">236</a> 
 <a class="jxr_linenumber" name="L237" href="#L237">237</a>             KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);
-<a class="jxr_linenumber" name="L238" href="#L238">238</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolde<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>eHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
+<a class="jxr_linenumber" name="L238" href="#L238">238</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
 <a class="jxr_linenumber" name="L239" href="#L239">239</a>             trustStores.add(trustStoreHolder);
 <a class="jxr_linenumber" name="L240" href="#L240">240</a> 
 <a class="jxr_linenumber" name="L241" href="#L241">241</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
@@ -259,7 +259,7 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>             }
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>             KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStorePath, trustStorePassword, trustStoreType);
-<a class="jxr_linenumber" name="L254" href="#L254">254</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolde<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>eHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
+<a class="jxr_linenumber" name="L254" href="#L254">254</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
 <a class="jxr_linenumber" name="L255" href="#L255">255</a>             trustStores.add(trustStoreHolder);
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> 
 <a class="jxr_linenumber" name="L257" href="#L257">257</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
@@ -271,7 +271,7 @@
 <a class="jxr_linenumber" name="L263" href="#L263">263</a> 
 <a class="jxr_linenumber" name="L264" href="#L264">264</a>         <strong class="jxr_keyword">public</strong> Builder withTrustMaterial(InputStream trustStoreStream, <strong class="jxr_keyword">char</strong>[] trustStorePassword, String trustStoreType) {
 <a class="jxr_linenumber" name="L265" href="#L265">265</a>             KeyStore trustStore = KeyStoreUtils.loadKeyStore(trustStoreStream, trustStorePassword, trustStoreType);
-<a class="jxr_linenumber" name="L266" href="#L266">266</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolde<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>eHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
+<a class="jxr_linenumber" name="L266" href="#L266">266</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
 <a class="jxr_linenumber" name="L267" href="#L267">267</a>             trustStores.add(trustStoreHolder);
 <a class="jxr_linenumber" name="L268" href="#L268">268</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L269" href="#L269">269</a>         }
@@ -283,7 +283,7 @@
 <a class="jxr_linenumber" name="L275" href="#L275">275</a> 
 <a class="jxr_linenumber" name="L276" href="#L276">276</a>         <strong class="jxr_keyword">public</strong> Builder withTrustMaterial(KeyStore trustStore, <strong class="jxr_keyword">char</strong>[] trustStorePassword) {
 <a class="jxr_linenumber" name="L277" href="#L277">277</a>             validateKeyStore(trustStore, TRUST_STORE_VALIDATION_EXCEPTION_MESSAGE);
-<a class="jxr_linenumber" name="L278" href="#L278">278</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolde<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>eHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
+<a class="jxr_linenumber" name="L278" href="#L278">278</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, trustStorePassword);
 <a class="jxr_linenumber" name="L279" href="#L279">279</a>             trustStores.add(trustStoreHolder);
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> 
 <a class="jxr_linenumber" name="L281" href="#L281">281</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
@@ -296,7 +296,7 @@
 <a class="jxr_linenumber" name="L288" href="#L288">288</a> 
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>         <strong class="jxr_keyword">public</strong> &lt;T <strong class="jxr_keyword">extends</strong> Certificate&gt; Builder withTrustMaterial(List&lt;T&gt; certificates) {
 <a class="jxr_linenumber" name="L290" href="#L290">290</a>             KeyStore trustStore = KeyStoreUtils.createTrustStore(certificates);
-<a class="jxr_linenumber" name="L291" href="#L291">291</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolde<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>eHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, KeyStoreUtils.DUMMY_PASSWORD.toCharArray());
+<a class="jxr_linenumber" name="L291" href="#L291">291</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> trustStoreHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(trustStore, KeyStoreUtils.DUMMY_PASSWORD.toCharArray());
 <a class="jxr_linenumber" name="L292" href="#L292">292</a>             trustStores.add(trustStoreHolder);
 <a class="jxr_linenumber" name="L293" href="#L293">293</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L294" href="#L294">294</a>         }
@@ -319,7 +319,7 @@
 <a class="jxr_linenumber" name="L311" href="#L311">311</a>             }
 <a class="jxr_linenumber" name="L312" href="#L312">312</a> 
 <a class="jxr_linenumber" name="L313" href="#L313">313</a>             KeyStore identity = KeyStoreUtils.loadKeyStore(identityStorePath, identityStorePassword, identityStoreType);
-<a class="jxr_linenumber" name="L314" href="#L314">314</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHol<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>oreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identity, identityStorePassword, identityPassword);
+<a class="jxr_linenumber" name="L314" href="#L314">314</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identity, identityStorePassword, identityPassword);
 <a class="jxr_linenumber" name="L315" href="#L315">315</a>             identities.add(identityHolder);
 <a class="jxr_linenumber" name="L316" href="#L316">316</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L317" href="#L317">317</a>         }
@@ -342,7 +342,7 @@
 <a class="jxr_linenumber" name="L334" href="#L334">334</a>             }
 <a class="jxr_linenumber" name="L335" href="#L335">335</a> 
 <a class="jxr_linenumber" name="L336" href="#L336">336</a>             KeyStore identity = KeyStoreUtils.loadKeyStore(identityStorePath, identityStorePassword, identityStoreType);
-<a class="jxr_linenumber" name="L337" href="#L337">337</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHol<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>oreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identity, identityStorePassword, identityPassword);
+<a class="jxr_linenumber" name="L337" href="#L337">337</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identity, identityStorePassword, identityPassword);
 <a class="jxr_linenumber" name="L338" href="#L338">338</a>             identities.add(identityHolder);
 <a class="jxr_linenumber" name="L339" href="#L339">339</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>         }
@@ -365,7 +365,7 @@
 <a class="jxr_linenumber" name="L357" href="#L357">357</a>             }
 <a class="jxr_linenumber" name="L358" href="#L358">358</a> 
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>             KeyStore identity = KeyStoreUtils.loadKeyStore(identityStream, identityStorePassword, identityStoreType);
-<a class="jxr_linenumber" name="L360" href="#L360">360</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHol<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>oreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identity, identityStorePassword, identityPassword);
+<a class="jxr_linenumber" name="L360" href="#L360">360</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identity, identityStorePassword, identityPassword);
 <a class="jxr_linenumber" name="L361" href="#L361">361</a>             identities.add(identityHolder);
 <a class="jxr_linenumber" name="L362" href="#L362">362</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>         }
@@ -376,7 +376,7 @@
 <a class="jxr_linenumber" name="L368" href="#L368">368</a> 
 <a class="jxr_linenumber" name="L369" href="#L369">369</a>         <strong class="jxr_keyword">public</strong> Builder withIdentityMaterial(KeyStore identityStore, <strong class="jxr_keyword">char</strong>[] identityStorePassword, <strong class="jxr_keyword">char</strong>[] identityPassword) {
 <a class="jxr_linenumber" name="L370" href="#L370">370</a>             validateKeyStore(identityStore, IDENTITY_VALIDATION_EXCEPTION_MESSAGE);
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHol<a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>oreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identityStore, identityStorePassword, identityPassword);
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>             <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a> identityHolder = <strong class="jxr_keyword">new</strong> <a name="KeyStoreHolder" href="../../../nl/altindag/ssl/model/KeyStoreHolder.html#KeyStoreHolder">KeyStoreHolder</a>(identityStore, identityStorePassword, identityPassword);
 <a class="jxr_linenumber" name="L372" href="#L372">372</a>             identities.add(identityHolder);
 <a class="jxr_linenumber" name="L373" href="#L373">373</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L374" href="#L374">374</a>         }
@@ -525,7 +525,7 @@
 <a class="jxr_linenumber" name="L517" href="#L517">517</a>         }
 <a class="jxr_linenumber" name="L518" href="#L518">518</a> 
 <a class="jxr_linenumber" name="L519" href="#L519">519</a>         <strong class="jxr_keyword">public</strong> Builder withTrustingAllCertificatesWithoutValidation() {
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>             LOGGER.warn(<span class="jxr_string">"UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation. Please don't use this configuration at production."</span>);
+<a class="jxr_linenumber" name="L520" href="#L520">520</a>             LOGGER.warn(<span class="jxr_string">"UnsafeTrustManager is being used. Client/Server certificates will be accepted without validation."</span>);
 <a class="jxr_linenumber" name="L521" href="#L521">521</a>             trustManagers.add(TrustManagerUtils.createUnsafeTrustManager());
 <a class="jxr_linenumber" name="L522" href="#L522">522</a>             <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L523" href="#L523">523</a>         }

@@ -189,8 +189,8 @@ public final class KeyManagerUtils {
             );
         }
 
-<span class="pc bpc" id="L192" title="1 of 2 branches missed.">        if (baseKeyManager instanceof HotSwappableX509ExtendedKeyManager) {</span>
-<span class="nc" id="L193">            ((HotSwappableX509ExtendedKeyManager) baseKeyManager).setKeyManager(KeyManagerUtils.wrapIfNeeded(newKeyManager));</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">        if (baseKeyManager instanceof HotSwappableX509ExtendedKeyManager) {</span>
+<span class="fc" id="L193">            ((HotSwappableX509ExtendedKeyManager) baseKeyManager).setKeyManager(KeyManagerUtils.wrapIfNeeded(newKeyManager));</span>
         } else {
 <span class="fc" id="L195">            throw new GenericKeyManagerException(</span>
 <span class="fc" id="L196">                    String.format(&quot;The baseKeyManager is from the instance of [%s] and should be an instance of [%s].&quot;,</span>
@@ -198,7 +198,7 @@ public final class KeyManagerUtils {
 <span class="fc" id="L198">                            HotSwappableX509ExtendedKeyManager.class.getName())</span>
             );
         }
-<span class="nc" id="L201">    }</span>
+<span class="fc" id="L201">    }</span>
 
     public static void addClientIdentityRoute(X509ExtendedKeyManager keyManager, String clientAlias, String... hosts) {
 <span class="fc" id="L204">        addClientIdentityRoute(keyManager, clientAlias, hosts, false);</span>
