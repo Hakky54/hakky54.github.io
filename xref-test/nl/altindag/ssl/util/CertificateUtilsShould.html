@@ -146,7 +146,7 @@
 <a class="jxr_linenumber" name="L138" href="#L138">138</a>     @Test
 <a class="jxr_linenumber" name="L139" href="#L139">139</a>     <strong class="jxr_keyword">void</strong> getSystemTrustedCertificates() {
 <a class="jxr_linenumber" name="L140" href="#L140">140</a>         String operatingSystem = System.getProperty(<span class="jxr_string">"os.name"</span>).toLowerCase();
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>         List&lt;Certificate&gt; certificates = CertificateUtils.getSystemTrustedCertificates();
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>         List&lt;X509Certificate&gt; certificates = CertificateUtils.getSystemTrustedCertificates();
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">if</strong> (operatingSystem.contains(<span class="jxr_string">"mac"</span>) || operatingSystem.contains(<span class="jxr_string">"windows"</span>)) {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             assertThat(certificates).isNotEmpty();
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         }
@@ -165,7 +165,7 @@
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>             when(keyStore.aliases()).thenReturn(Collections.enumeration(Collections.singletonList(<span class="jxr_string">"client"</span>)));
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>             when(keyStore.isCertificateEntry(<span class="jxr_string">"client"</span>)).thenReturn(false);
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 
-<a class="jxr_linenumber" name="L160" href="#L160">160</a>             List&lt;Certificate&gt; certificates = CertificateUtils.getSystemTrustedCertificates();
+<a class="jxr_linenumber" name="L160" href="#L160">160</a>             List&lt;X509Certificate&gt; certificates = CertificateUtils.getSystemTrustedCertificates();
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> 
 <a class="jxr_linenumber" name="L162" href="#L162">162</a>             assertThat(certificates).isEmpty();
 <a class="jxr_linenumber" name="L163" href="#L163">163</a>         }
@@ -193,7 +193,7 @@
 <a class="jxr_linenumber" name="L185" href="#L185">185</a> 
 <a class="jxr_linenumber" name="L186" href="#L186">186</a>     @Test
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>     <strong class="jxr_keyword">void</strong> getJdkTrustedCertificates() {
-<a class="jxr_linenumber" name="L188" href="#L188">188</a>         List&lt;Certificate&gt; jdkTrustedCertificates = CertificateUtils.getJdkTrustedCertificates();
+<a class="jxr_linenumber" name="L188" href="#L188">188</a>         List&lt;X509Certificate&gt; jdkTrustedCertificates = CertificateUtils.getJdkTrustedCertificates();
 <a class="jxr_linenumber" name="L189" href="#L189">189</a> 
 <a class="jxr_linenumber" name="L190" href="#L190">190</a>         assertThat(jdkTrustedCertificates).hasSizeGreaterThan(0);
 <a class="jxr_linenumber" name="L191" href="#L191">191</a>     }
@@ -367,33 +367,19 @@
 <a class="jxr_linenumber" name="L359" href="#L359">359</a>         }
 <a class="jxr_linenumber" name="L360" href="#L360">360</a>     }
 <a class="jxr_linenumber" name="L361" href="#L361">361</a> 
-<a class="jxr_linenumber" name="L362" href="#L362">362</a>     @Test
-<a class="jxr_linenumber" name="L363" href="#L363">363</a>     <strong class="jxr_keyword">void</strong> throwsGenericCertificateExceptionWhenGettingSystemTrustedCertificatesFails() <strong class="jxr_keyword">throws</strong> KeyStoreException {
-<a class="jxr_linenumber" name="L364" href="#L364">364</a>         KeyStore keyStore = mock(KeyStore.<strong class="jxr_keyword">class</strong>);
-<a class="jxr_linenumber" name="L365" href="#L365">365</a>         <strong class="jxr_keyword">try</strong> (MockedStatic&lt;KeyStoreUtils&gt; keyStoreUtilsMockedStatic = mockStatic(KeyStoreUtils.<strong class="jxr_keyword">class</strong>, InvocationOnMock::getMock)) {
-<a class="jxr_linenumber" name="L366" href="#L366">366</a> 
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>             keyStoreUtilsMockedStatic.when(KeyStoreUtils::loadSystemKeyStores).thenReturn(Collections.singletonList(keyStore));
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>             when(keyStore.aliases()).thenThrow(<strong class="jxr_keyword">new</strong> KeyStoreException(<span class="jxr_string">"KABOOM!!!"</span>));
+<a class="jxr_linenumber" name="L362" href="#L362">362</a>     <strong class="jxr_keyword">private</strong> Path copyFileToHomeDirectory(String path, String fileName) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="L363" href="#L363">363</a>         <strong class="jxr_keyword">try</strong> (InputStream file = Thread.currentThread().getContextClassLoader().getResourceAsStream(path + fileName)) {
+<a class="jxr_linenumber" name="L364" href="#L364">364</a>             Path destination = Paths.get(TEMPORALLY_PEM_LOCATION, fileName);
+<a class="jxr_linenumber" name="L365" href="#L365">365</a>             Files.copy(Objects.requireNonNull(file), destination, REPLACE_EXISTING);
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>             <strong class="jxr_keyword">return</strong> destination;
+<a class="jxr_linenumber" name="L367" href="#L367">367</a>         }
+<a class="jxr_linenumber" name="L368" href="#L368">368</a>     }
 <a class="jxr_linenumber" name="L369" href="#L369">369</a> 
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>             assertThatThrownBy(CertificateUtils::getSystemTrustedCertificates)
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>                     .isInstanceOf(GenericCertificateException.<strong class="jxr_keyword">class</strong>)
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>                     .hasMessageContaining(<span class="jxr_string">"KABOOM!!!"</span>);
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>         }
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>     }
-<a class="jxr_linenumber" name="L375" href="#L375">375</a> 
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>     <strong class="jxr_keyword">private</strong> Path copyFileToHomeDirectory(String path, String fileName) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>         <strong class="jxr_keyword">try</strong> (InputStream file = Thread.currentThread().getContextClassLoader().getResourceAsStream(path + fileName)) {
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>             Path destination = Paths.get(TEMPORALLY_PEM_LOCATION, fileName);
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>             Files.copy(Objects.requireNonNull(file), destination, REPLACE_EXISTING);
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>             <strong class="jxr_keyword">return</strong> destination;
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>         }
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>     }
-<a class="jxr_linenumber" name="L383" href="#L383">383</a> 
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>     <strong class="jxr_keyword">private</strong> InputStream getResource(String path) {
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.getClass().getClassLoader().getResourceAsStream(path);
-<a class="jxr_linenumber" name="L386" href="#L386">386</a>     }
-<a class="jxr_linenumber" name="L387" href="#L387">387</a> 
-<a class="jxr_linenumber" name="L388" href="#L388">388</a> }
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>     <strong class="jxr_keyword">private</strong> InputStream getResource(String path) {
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>.getClass().getClassLoader().getResourceAsStream(path);
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>     }
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> 
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2021. All rights reserved.</div>
